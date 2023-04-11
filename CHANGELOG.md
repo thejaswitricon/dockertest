@@ -1,5 +1,18 @@
 # CHANGELOG
 
+# [2.3.0](https://github.com/thejaswitricon/dockertest/compare/v2.2.0...v2.3.0) (2023-04-11)
+
+
+### Features
+
+* add symantic versioning ([3a14442](https://github.com/thejaswitricon/dockertest/commit/3a144425cd2972dfd492b10834fdfa52a17c6f4a))
+* add symantic versioning ([67b65d5](https://github.com/thejaswitricon/dockertest/commit/67b65d51da293868cecc91f4730056eda8d51056))
+* add symantic versioning ([e800df2](https://github.com/thejaswitricon/dockertest/commit/e800df249681b10ffff3a8dbbf8207f22847cc4b))
+* add symantic versioning ([041787d](https://github.com/thejaswitricon/dockertest/commit/041787d4a2a4644f4d39d402df14218762bf0946))
+* add symantic versioning ([1659120](https://github.com/thejaswitricon/dockertest/commit/16591208296769941e4d3d9ea79ea32b242d3f1d))
+* add symantic versioning ([39bc205](https://github.com/thejaswitricon/dockertest/commit/39bc205622f603fcb885db6da422d988cab9ae61))
+* add symantic versioning ([50ef30e](https://github.com/thejaswitricon/dockertest/commit/50ef30eeaabab68f2bd3e5b259898430f848fac2))
+
 # [2.2.0](https://github.com/thejaswitricon/dockertest/compare/v2.1.0...v2.2.0) (2023-04-11)
 
 
