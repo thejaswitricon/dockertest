@@ -1,5 +1,12 @@
 # CHANGELOG
 
+# [2.2.0](https://github.com/thejaswitricon/dockertest/compare/v2.1.0...v2.2.0) (2023-04-11)
+
+
+### Features
+
+* add symantic versioning ([b0fdef3](https://github.com/thejaswitricon/dockertest/commit/b0fdef3948f605d6850bd00160f942bc483996f9))
+
 # [2.1.0](https://github.com/thejaswitricon/dockertest/compare/v2.0.0...v2.1.0) (2023-04-11)
 
 
