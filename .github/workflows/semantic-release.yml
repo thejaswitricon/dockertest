@@ -25,7 +25,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          cd app1
+          cd application1
           npm ci
 
       - name: Semantic Release
