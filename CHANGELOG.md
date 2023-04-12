@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## [1.4.3](https://github.com/thejaswitricon/dockertest/compare/app1-v1.4.2...app1-v1.4.3) (2023-04-12)
+
+
+### Bug Fixes
+
+* add features to app ([6e429f3](https://github.com/thejaswitricon/dockertest/commit/6e429f3f46d2a4773bf0c9402724d9576ced817c))
+* add features to app1 ([bb1f5e1](https://github.com/thejaswitricon/dockertest/commit/bb1f5e109d06c743e23692ebf9aefa2728b67ac1))
+
 # 1.0.0 (2023-04-12)
 
 
