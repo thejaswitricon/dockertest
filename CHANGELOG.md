@@ -1,5 +1,24 @@
 # CHANGELOG
 
+# [2.9.0](https://github.com/thejaswitricon/dockertest/compare/v2.8.2...v2.9.0) (2023-04-12)
+
+
+### Bug Fixes
+
+* delete init in ci script ([31d768e](https://github.com/thejaswitricon/dockertest/commit/31d768e4a05ce9a20d9dd27cb5daacb53d3448ca))
+* delete init in ci script ([1b54d75](https://github.com/thejaswitricon/dockertest/commit/1b54d75dc16346d8861f190c1c2d0d715020be73))
+* delete init in ci script ([e49b202](https://github.com/thejaswitricon/dockertest/commit/e49b202761e7f1f1afc23d0b8ac9b3fd5d82e985))
+
+
+### Features
+
+* add features to app1 ([aa951b5](https://github.com/thejaswitricon/dockertest/commit/aa951b544787cf85ee7a08fa9aa912c60cbc5ec7))
+* add features to app1 ([9a1942e](https://github.com/thejaswitricon/dockertest/commit/9a1942e532b4cb00b324e0e40d96cb24cdead1bb))
+* add features to app1 ([2984deb](https://github.com/thejaswitricon/dockertest/commit/2984deb7b25b0a010f510846bd4a3ff541111467))
+* add features to app1 ([02ba80c](https://github.com/thejaswitricon/dockertest/commit/02ba80cc526c1909b696ef6c86f75f3eb4444a01))
+* add features to app1 ([6a871f1](https://github.com/thejaswitricon/dockertest/commit/6a871f16091e75946a3611dcd3a61074d8cec43f))
+* add features to app1 ([b92b945](https://github.com/thejaswitricon/dockertest/commit/b92b945a68c98229931663740272163cd6b8be7b))
+
 ## [2.8.2](https://github.com/thejaswitricon/dockertest/compare/v2.8.1...v2.8.2) (2023-04-12)
 
 
