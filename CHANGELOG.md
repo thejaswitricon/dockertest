@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## [2.8.2](https://github.com/thejaswitricon/dockertest/compare/v2.8.1...v2.8.2) (2023-04-12)
+
+
+### Bug Fixes
+
+* delete init in ci script ([6f0d4d9](https://github.com/thejaswitricon/dockertest/commit/6f0d4d97115e95b3e98420d4fb7f2cfaa40ada27))
+* delete init in ci script ([7cc9ca4](https://github.com/thejaswitricon/dockertest/commit/7cc9ca4e3ca490ad450112109309701bd62d5be2))
+
 ## [2.8.1](https://github.com/thejaswitricon/dockertest/compare/v2.8.0...v2.8.1) (2023-04-12)
 
 
