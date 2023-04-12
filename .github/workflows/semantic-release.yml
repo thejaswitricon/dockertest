@@ -30,7 +30,7 @@ jobs:
       - name: Update tag format
         id: update_tag_format
         run: |
-          echo "::set-output name=tag_format::${{ steps.changed_dirs.outputs.dirs }}-v\${version}"
+          echo "::set-output name=tag_format::${{ steps.changed_dirs.outputs.dirs }}-v\${{ env.RELEASE_VERSION }}"
 
       # https://github.com/marketplace/actions/semantic-release-action#usage
       - name: Semantic Release
