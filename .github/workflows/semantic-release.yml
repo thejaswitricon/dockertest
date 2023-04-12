@@ -14,9 +14,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-        with:
-          ref: ${{ github.ref }}
-          fetch-depth: 0
+        # with:
+        #   ref: ${{ github.ref }}
+        #   fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v2
@@ -54,9 +54,12 @@ jobs:
 
 # on:
 #   push:
-#     branches: [ master ]
+#     branches: 
+#         - master
 
-# permissions: write-all
+# paths:
+#       - 'applications/app1/**'
+
 
 # jobs:
 #   release:
