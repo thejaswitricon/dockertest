@@ -1,100 +1,61 @@
-name: Mono-Repo CI/CD
+---
+name: Continuous Delivery
 
 on:
   push:
-    branches:
-      - main
-    paths:
-      - 'application1/**'
-      - '!app1/**'
+    branches: [ master ]
+
+permissions: write-all
 
 jobs:
   release:
+    name: Semantic Release
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'push' && contains(github.event.head_commit.modified, 'app1/') }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
+        uses: actions/checkout@v3
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v2.4.0
-        with:
-          node-version: '14.x'
-
-      - name: Install dependencies
-        run: |
-          cd application1
-          npm ci
-
+      # https://github.com/marketplace/actions/semantic-release-action#usage
       - name: Semantic Release
         uses: docker://ghcr.io/codfish/semantic-release-action:v2
+        id: semantic
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT_GITHUB }}
         with:
+          tag_format: 'v${version}'
           additional_packages: |
             ['@semantic-release/changelog', '@semantic-release/git']
           plugins: |
-            ['@semantic-release
+            ['@semantic-release/commit-analyzer', '@semantic-release/release-notes-generator', ['@semantic-release/changelog', {changelogTitle: '# CHANGELOG'}], '@semantic-release/github', '@semantic-release/git']
+          # specify default branches to add support for the `main` branch
+          # which semantic-release doesn't have as a default yet.
+          branches: |
+            [
+              'master'
+            ]
+      - name: Semantic Release Output Summary
+        id: semantic_summary
+        run: |
+          echo "### Semantic Version = ${{ steps.semantic.outputs.release-version }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          echo "${{ toJson(steps.semantic.outputs) }}" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+        continue-on-error: true
 
+      # - run: echo ${{ steps.semantic.outputs.release-version }}
 
-# ---
-# name: Continuous Delivery
+      # - run: echo "$OUTPUTS"
+      #   env:
+      #     OUTPUTS: ${{ toJson(steps.semantic.outputs) }}
 
-# on:
-#   push:
-#     branches: [ master ]
+      # - uses: codfish/some-other-action@v1
+      #   with:
+      #     release-version: ${{ steps.semantic.outputs.release-version }}
 
-# permissions: write-all
-
-# jobs:
-#   release:
-#     name: Semantic Release
-#     runs-on: ubuntu-latest
-#     steps:
-#       - name: Checkout
-#         uses: actions/checkout@v3
-
-#       # https://github.com/marketplace/actions/semantic-release-action#usage
-#       - name: Semantic Release
-#         uses: docker://ghcr.io/codfish/semantic-release-action:v2
-#         id: semantic
-#         env:
-#           GITHUB_TOKEN: ${{ secrets.PAT_GITHUB }}
-#         with:
-#           tag_format: 'v${version}'
-#           additional_packages: |
-#             ['@semantic-release/changelog', '@semantic-release/git']
-#           plugins: |
-#             ['@semantic-release/commit-analyzer', '@semantic-release/release-notes-generator', ['@semantic-release/changelog', {changelogTitle: '# CHANGELOG'}], '@semantic-release/github', '@semantic-release/git']
-#           # specify default branches to add support for the `main` branch
-#           # which semantic-release doesn't have as a default yet.
-#           branches: |
-#             [
-#               'master'
-#             ]
-#       - name: Semantic Release Output Summary
-#         id: semantic_summary
-#         run: |
-#           echo "### Semantic Version = ${{ steps.semantic.outputs.release-version }}\`" >> $GITHUB_STEP_SUMMARY
-#           echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
-#           echo "${{ toJson(steps.semantic.outputs) }}" >> $GITHUB_STEP_SUMMARY
-#           echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
-#         continue-on-error: true
-
-#       # - run: echo ${{ steps.semantic.outputs.release-version }}
-
-#       # - run: echo "$OUTPUTS"
-#       #   env:
-#       #     OUTPUTS: ${{ toJson(steps.semantic.outputs) }}
-
-#       # - uses: codfish/some-other-action@v1
-#       #   with:
-#       #     release-version: ${{ steps.semantic.outputs.release-version }}
-
-#       # - name: docker push version
-#       #   if: steps.semantic.outputs.new-release-published == 'true'
-#       #   run: |
-#       #     docker tag some-image some-image:$TAG
-#       #     docker push some-image:$TAG
-#       #   env:
-#       #     TAG: v$RELEASE_VERSION
+      # - name: docker push version
+      #   if: steps.semantic.outputs.new-release-published == 'true'
+      #   run: |
+      #     docker tag some-image some-image:$TAG
+      #     docker push some-image:$TAG
+      #   env:
+      #     TAG: v$RELEASE_VERSION
