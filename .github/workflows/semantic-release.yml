@@ -39,7 +39,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.PAT_GITHUB }}
         with:
-          tag_format: '${{ steps.update_tag_format.outputs.tag_format }}'
+          tag_format: '${{ steps.changed_dirs.outputs.dirs }}/${{ github.event.client_payload.version }}'
           additional_packages: |
             ['@semantic-release/changelog', '@semantic-release/git']
           plugins: |
