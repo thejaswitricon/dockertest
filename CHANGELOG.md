@@ -1,5 +1,36 @@
 # CHANGELOG
 
+# [1.1.0](https://github.com/thejaswitricon/dockertest/compare/app1-v1.0.0...app1-v1.1.0) (2023-04-12)
+
+
+### Features
+
+* add features to app1 ([af6379d](https://github.com/thejaswitricon/dockertest/commit/af6379dc39773c66027d52c0d1325e54ca3efbea))
+* add features to app1 ([ce00c76](https://github.com/thejaswitricon/dockertest/commit/ce00c764f9aa7edb61e3cd60f6f99e0e3ff7d1a9))
+* add features to app1 ([f3008db](https://github.com/thejaswitricon/dockertest/commit/f3008dbb850b11ae0e6c85480e4c5c678c60b995))
+* add features to app1 ([b6c3dfa](https://github.com/thejaswitricon/dockertest/commit/b6c3dfa95fc4b2a124192546b8b736fe327dc2ab))
+* add features to app1 ([d9402b7](https://github.com/thejaswitricon/dockertest/commit/d9402b7d08af522a4bb94bffc0e505095e1d85ae))
+* add features to app1 ([4362820](https://github.com/thejaswitricon/dockertest/commit/43628207703e339c65fe98388abc68375b4f0900))
+* add features to app1 ([b109113](https://github.com/thejaswitricon/dockertest/commit/b109113595a26ca59327d966d9f9269cff364b50))
+* add features to app1 ([0b7d08c](https://github.com/thejaswitricon/dockertest/commit/0b7d08c5b4357b0234d73bc9ce98f2181b6ffd1d))
+* add features to app1 ([e12bab7](https://github.com/thejaswitricon/dockertest/commit/e12bab77ea7e1b72093f8421fe579ca43ac736c2))
+* add features to app1 ([c41312a](https://github.com/thejaswitricon/dockertest/commit/c41312ab086e13a9c8fdeaff4892165315f332da))
+* add features to app1 ([71f0ed4](https://github.com/thejaswitricon/dockertest/commit/71f0ed4b3222f867edb609bc695d211f1d50a407))
+* add features to app1 ([e074db7](https://github.com/thejaswitricon/dockertest/commit/e074db7ea1481aa4d799061e902cdbe2b79ed733))
+* add features to app1 ([c5ef46c](https://github.com/thejaswitricon/dockertest/commit/c5ef46caed24c473cea7208a223789a4bce31927))
+* add features to app1 ([d48d628](https://github.com/thejaswitricon/dockertest/commit/d48d628afc9b60049badbda0b668bd7ddc933543))
+* add features to app1 ([9b431bb](https://github.com/thejaswitricon/dockertest/commit/9b431bbbb2dfa900e82f8051f789016635102f0a))
+* add features to app1 ([9640e31](https://github.com/thejaswitricon/dockertest/commit/9640e31136cb16b674b7d73e200d7942c177721b))
+* add features to app1 ([0bc0bef](https://github.com/thejaswitricon/dockertest/commit/0bc0bef77abf72dba5e30763caad4e893d41ba3e))
+* add features to app1 ([276de85](https://github.com/thejaswitricon/dockertest/commit/276de8547177b85cfdf560357b11d237e08d876d))
+* add features to app1 ([1515ad0](https://github.com/thejaswitricon/dockertest/commit/1515ad0c34634f0c54e26af2e1f71579aba1c384))
+* add features to app1 ([b76bf2f](https://github.com/thejaswitricon/dockertest/commit/b76bf2f05ffc394b218df8bfabc100338c5bf52b))
+* add features to app1 ([00b0af6](https://github.com/thejaswitricon/dockertest/commit/00b0af6ee4b1f0b2d6abbf5202b88bcd14633c16))
+* add features to app1 ([d6ff26b](https://github.com/thejaswitricon/dockertest/commit/d6ff26b9d1ae024ba807c2270f7a7125b49831dd))
+* add features to app1 ([7d6a49f](https://github.com/thejaswitricon/dockertest/commit/7d6a49f40e12ed10e99f51a365e17ab55fe59ad4))
+* ci fix ([86bf4db](https://github.com/thejaswitricon/dockertest/commit/86bf4db4abae253502be078a8094d4ca3b28a687))
+* ci fix ([72bfb4a](https://github.com/thejaswitricon/dockertest/commit/72bfb4aebd3181365ccd2379144d59292031cd4a))
+
 # 1.0.0 (2023-04-12)
 
 
