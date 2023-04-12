@@ -1,5 +1,25 @@
 # CHANGELOG
 
+# [2.6.0](https://github.com/thejaswitricon/dockertest/compare/v2.5.0...v2.6.0) (2023-04-12)
+
+
+### Features
+
+* add symantic versioning ([66880bc](https://github.com/thejaswitricon/dockertest/commit/66880bcd074828c6f6cd0b43e08443cc01e58b85))
+* add symantic versioning ([54edd19](https://github.com/thejaswitricon/dockertest/commit/54edd19dd8a4add1d92662476937e40cb1a6fba8))
+* add symantic versioning ([7dea7a2](https://github.com/thejaswitricon/dockertest/commit/7dea7a2c49eea5fc7f3211a41a0b527ddb113163))
+* add symantic versioning ([6af88f0](https://github.com/thejaswitricon/dockertest/commit/6af88f067cd92ffa1a42b022d5e725a507b8a9de))
+* add symantic versioning ([c17d821](https://github.com/thejaswitricon/dockertest/commit/c17d8219ed0ec2a1a0b31c4e0ec37a9f9ac568e3))
+* add symantic versioning ([3690dea](https://github.com/thejaswitricon/dockertest/commit/3690dea3776c15456067801ebb4b2628d331c78b))
+* add symantic versioning ([3fe0731](https://github.com/thejaswitricon/dockertest/commit/3fe073111fdb80fe68cd8ec339f22340ab6555c1))
+* add symantic versioning ([f78a73a](https://github.com/thejaswitricon/dockertest/commit/f78a73a616718e96deaf2a5a39d028f803fb046f))
+* add symantic versioning ([2a89c17](https://github.com/thejaswitricon/dockertest/commit/2a89c179e4395b451531ce1001445afa2b0701a2))
+* add symantic versioning ([06bc5d1](https://github.com/thejaswitricon/dockertest/commit/06bc5d19fcaff1ad79484ad876d70797e3544a33))
+* add symantic versioning ([428aba0](https://github.com/thejaswitricon/dockertest/commit/428aba06010f4e8d471daf8db043118c5ff1fc51))
+* add symantic versioning ([e18f922](https://github.com/thejaswitricon/dockertest/commit/e18f922d914ec65f49e071d55bac5e156d9226d9))
+* add symantic versioning ([234b345](https://github.com/thejaswitricon/dockertest/commit/234b345cfd12ea7403d5d68623f787be592e66b2))
+* add symantic versioning ([ca1f663](https://github.com/thejaswitricon/dockertest/commit/ca1f6638a4429599281730bbdfbacee1a44070a4))
+
 # [2.5.0](https://github.com/thejaswitricon/dockertest/compare/v2.4.0...v2.5.0) (2023-04-11)
 
 
