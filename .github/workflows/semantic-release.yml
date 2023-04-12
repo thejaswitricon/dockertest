@@ -6,6 +6,8 @@ on:
       - master
     paths:
       - 'applications/app1/**'
+      
+permissions: write-all
 
 jobs:
   release:
