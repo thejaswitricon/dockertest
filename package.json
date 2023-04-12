@@ -1,0 +1,17 @@
+{
+  "name": "dockertest",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "workspaces": [
+    "applications/app1",
+    "applications/app2"
+  ],
+  "scripts": {
+    "start:app1": "cd applications/app1 && npm start",
+    "start:app2": "cd applications/app2 && python main.py"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
