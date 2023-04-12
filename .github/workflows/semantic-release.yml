@@ -6,7 +6,7 @@ on:
       - master
     paths:
       - 'applications/app1/**'
-      
+
 permissions: write-all
 
 jobs:
@@ -24,7 +24,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.PAT_GITHUB }}
         with:
-          tag_format: 'v${version}'
+          tag_format: 'v${version}-${{ env.GITHUB_REPOSITORY_NAME }}'
           additional_packages: |
             ['@semantic-release/changelog', '@semantic-release/git']
           plugins: |
