@@ -24,7 +24,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.PAT_GITHUB }}
         with:
-          tag_format: '${{ env.GITHUB_REPOSITORY_NAME }}/v${version}'
+          tag_format: '${{ env.APP_NAME }}-v${version}'
           additional_packages: |
             ['@semantic-release/changelog', '@semantic-release/git']
           plugins: |
