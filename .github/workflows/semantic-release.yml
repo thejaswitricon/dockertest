@@ -9,38 +9,71 @@ permissions: write-all
 
 jobs:
   release:
-    name: Semantic Release
+    name: Release
+    # https://github.community/t/trigger-job-on-tag-push-only/18076
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    # needs: test_push
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-
-      # https://github.com/marketplace/actions/semantic-release-action#usage
-      - name: Semantic Release
-        uses: docker://ghcr.io/codfish/semantic-release-action:v2
-        id: semantic
-        env:
-          GITHUB_TOKEN: ${{ secrets.PAT_GITHUB }}
         with:
-          tag_format: 'v${version}'
-          additional_packages: |
-            ['@semantic-release/changelog', '@semantic-release/git']
-          plugins: |
-            ['@semantic-release/commit-analyzer', '@semantic-release/release-notes-generator', ['@semantic-release/changelog', {changelogTitle: '# CHANGELOG'}], '@semantic-release/github', '@semantic-release/git']
-          # specify default branches to add support for the `main` branch
-          # which semantic-release doesn't have as a default yet.
-          branches: |
-            [
-              'master'
-            ]
-      - name: Semantic Release Output Summary
-        id: semantic_summary
-        run: |
-          echo "### Semantic Version = ${{ steps.semantic.outputs.release-version }}\`" >> $GITHUB_STEP_SUMMARY
-          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
-          echo "${{ toJson(steps.semantic.outputs) }}" >> $GITHUB_STEP_SUMMARY
-          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
-        continue-on-error: true
+          persist-credentials: false
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Restore artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: artifact-${{ github.run_id }}
+
+      - name: Release
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          GH_USER: 'qiwibot'
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          GIT_AUTHOR_EMAIL: 'opensource@qiwi.com'
+          GIT_COMMITTER_EMAIL: 'opensource@qiwi.com'
+          GIT_AUTHOR_NAME: '@qiwibot'
+          GIT_COMMITTER_NAME: '@qiwibot'
+        run: npx -p @qiwi/semrel-toolkit semantic-release -e @qiwi/semrel-config
+
+  
+  # release:
+  #   name: Semantic Release
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v3
+
+  #     # https://github.com/marketplace/actions/semantic-release-action#usage
+  #     - name: Semantic Release
+  #       uses: docker://ghcr.io/codfish/semantic-release-action:v2
+  #       id: semantic
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.PAT_GITHUB }}
+  #       with:
+  #         tag_format: 'v${version}'
+  #         additional_packages: |
+  #           ['@semantic-release/changelog', '@semantic-release/git']
+  #         plugins: |
+  #           ['@semantic-release/commit-analyzer', '@semantic-release/release-notes-generator', ['@semantic-release/changelog', {changelogTitle: '# CHANGELOG'}], '@semantic-release/github', '@semantic-release/git']
+  #         # specify default branches to add support for the `main` branch
+  #         # which semantic-release doesn't have as a default yet.
+  #         branches: |
+  #           [
+  #             'master'
+  #           ]
+  #     - name: Semantic Release Output Summary
+  #       id: semantic_summary
+  #       run: |
+  #         echo "### Semantic Version = ${{ steps.semantic.outputs.release-version }}\`" >> $GITHUB_STEP_SUMMARY
+  #         echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+  #         echo "${{ toJson(steps.semantic.outputs) }}" >> $GITHUB_STEP_SUMMARY
+  #         echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+  #       continue-on-error: true
 
       # - run: echo ${{ steps.semantic.outputs.release-version }}
 
