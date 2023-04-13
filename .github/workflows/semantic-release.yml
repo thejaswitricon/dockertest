@@ -66,3 +66,12 @@ jobs:
           echo "${{ toJson(steps.semantic.outputs) }}" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
         continue-on-error: true
+
+      - name: Semantic Release Output Summary
+        id: semantic_summary
+        run: |
+          echo "### Semantic Version = ${{ steps.semantic.outputs.release-version }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          echo "${{ toJson(steps.semantic.outputs) }}" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+        continue-on-error: true
