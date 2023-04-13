@@ -2,13 +2,27 @@ on:
   push:
     branches: [ master ]
     paths:
-      - 'applications/app1/**'
-      - 'applications/app2/**'
+      - 'applications/**'
 
 jobs:
+
+  build-javascript:
+    runs-on: ubuntu-latest
+    if: ${{ contains(github.event.head_commit.modified, './applications/app1') }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14.x'
+      - name: Install dependencies
+        run: |
+          cd applications/app1
+          npm install
+
   build-python:
     runs-on: ubuntu-latest
-    if: ${{ contains(github.event.head_commit.modified, 'applications/app2') }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -25,20 +39,6 @@ jobs:
       - name: Run tests
         run: pytest
 
-  build-javascript:
-    runs-on: ubuntu-latest
-    if: ${{ contains(github.event.head_commit.modified, 'applications/app1') }}
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '14.x'
-      - name: Install dependencies
-        run: |
-          cd applications/app1
-          npm install
 
 
 # on:
