@@ -1,79 +1,46 @@
 on:
   push:
     branches: [ master ]
+    paths:
+      - 'applications/app1/**'
+      - 'applications/app2/**'
+
 jobs:
-  python:
-    if: ${{ contains(github.event.head_commit.modified, 'applications/app1') }}
+  build-python:
     runs-on: ubuntu-latest
+    if: "github.event_name == 'push' && contains(github.event.head_commit.modified, 'applications/app2/')"
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.x'
-    - name: Install dependencies
-      run: |
-        cd applications/python
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-        pip install pytest
-    - name: Run tests
-      run: pytest
-  javascript:
-    if [[ $(git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | grep "^applications/app2-js/") ]]; then
-  echo "JavaScript application has changes, running CI..."
-  # Run the JavaScript CI steps
-else
-  echo "No changes to JavaScript application, skipping CI..."
-  # Skip the JavaScript CI steps
-fi
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+      - name: Install dependencies
+        run: |
+          cd applications/app2
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest
+      - name: Run tests
+        run: pytest
 
-
-
-
-# name: Continuous Integration
-
-# on:
-#   push:
-#     branches: [ master ]
-#     paths:
-#       - 'applications/**'
-
-# jobs:
-#   python-ci:
-#     runs-on: ubuntu-latest
-#     if: contains(github.event_path, 'applications/python/')
-#     steps:
-#       - name: Checkout code
-#         uses: actions/checkout@v2
-#       - name: Set up Python
-#         uses: actions/setup-python@v2
-#         with:
-#           python-version: '3.x'
-#       - name: Install dependencies
-#         run: |
-#           cd applications/python
-#           python -m pip install --upgrade pip
-#           pip install -r requirements.txt
-#           pip install pytest
-#       - name: Run tests
-#         run: pytest
-
-#   javascript-ci:
-#     runs-on: ubuntu-latest
-#     if: contains(github.event_path, 'applications/javascript/')
-#     steps:
-#       - name: Checkout code
-#         uses: actions/checkout@v2
-#       - name: Install dependencies
-#         uses: actions/setup-node@v2
-#         with:
-#           node-version: '14'
-#       - name: Install packages
-#         run: npm ci
-#       - name: Run tests
-#         run: npm test
+  build-javascript:
+    runs-on: ubuntu-latest
+    if: "github.event_name == 'push' && contains(github.event.head_commit.modified, 'applications/app1/')"
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14.x'
+      - name: Install dependencies
+        run: |
+          cd applications/app1
+          npm install
+      - name: Run tests
+        run: npm test
 
 
 
