@@ -1,45 +1,82 @@
-name: Continuous Integration
-
 on:
   push:
     branches: [ master ]
-    paths:
-      - 'applications/**'
-
 jobs:
-  python-ci:
+  python:
+    if: ${{ contains(github.event.head_commit.modified, 'applications/python') }}
     runs-on: ubuntu-latest
-    if: contains(github.event_path, 'applications/python/')
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.x'
-      - name: Install dependencies
-        run: |
-          cd applications/python
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install pytest
-      - name: Run tests
-        run: pytest
+    - name: Checkout code
+      uses: actions/checkout@v2
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+    - name: Install dependencies
+      run: |
+        cd applications/python
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pytest
+    - name: Run tests
+      run: pytest
+  javascript:
+    if: ${{ contains(github.event.head_commit.modified, 'applications/javascript') }}
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+    - name: Install dependencies
+      run: |
+        cd applications/javascript
+        npm install
+    - name: Run tests
+      run: npm test
 
-  javascript-ci:
-    runs-on: ubuntu-latest
-    if: contains(github.event_path, 'applications/javascript/')
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Install dependencies
-        uses: actions/setup-node@v2
-        with:
-          node-version: '14'
-      - name: Install packages
-        run: npm ci
-      - name: Run tests
-        run: npm test
+
+
+# name: Continuous Integration
+
+# on:
+#   push:
+#     branches: [ master ]
+#     paths:
+#       - 'applications/**'
+
+# jobs:
+#   python-ci:
+#     runs-on: ubuntu-latest
+#     if: contains(github.event_path, 'applications/python/')
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v2
+#       - name: Set up Python
+#         uses: actions/setup-python@v2
+#         with:
+#           python-version: '3.x'
+#       - name: Install dependencies
+#         run: |
+#           cd applications/python
+#           python -m pip install --upgrade pip
+#           pip install -r requirements.txt
+#           pip install pytest
+#       - name: Run tests
+#         run: pytest
+
+#   javascript-ci:
+#     runs-on: ubuntu-latest
+#     if: contains(github.event_path, 'applications/javascript/')
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v2
+#       - name: Install dependencies
+#         uses: actions/setup-node@v2
+#         with:
+#           node-version: '14'
+#       - name: Install packages
+#         run: npm ci
+#       - name: Run tests
+#         run: npm test
 
 
 
