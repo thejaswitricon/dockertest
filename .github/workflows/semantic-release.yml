@@ -32,7 +32,7 @@ jobs:
         run: |
           app_name="${{ steps.changed_dirs.outputs.dirs }}"
           version="${{ steps.semantic.outputs.next-version }}"
-          sed -i "1s/.*/# CHANGELOG ${app_name}-${version}/" applications/${app_name}/CHANGELOG.md
+          sed -i "1s/.*/# CHANGELOG ${app_name}-${version}/" ../CHANGELOG.md
 
       # Update the tag format to include the name of the directory
       - name: Update tag format
