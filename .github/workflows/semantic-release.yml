@@ -58,13 +58,15 @@ jobs:
             [
               'master'
             ]
-      - name: Semantic Release Output Summary
-        id: semantic_summary
+
+      - name: Update CHANGELOG.md
+        id: update_changelog
         run: |
-          echo "### Semantic Version = ${{ steps.semantic.outputs.release-version }}\`" >> $GITHUB_STEP_SUMMARY
-          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
-          echo "${{ toJson(steps.semantic.outputs) }}" >> $GITHUB_STEP_SUMMARY
-          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          folder_name=$(echo "${{ steps.changed_dirs.outputs.dirs }}" | awk '{print tolower($0)}')
+          version=$(echo "${{ steps.semantic.outputs.release-version }}" | sed 's/^v//')
+          date=$(date +%Y-%m-%d)
+          changelog_entry="## [$version](https://github.com/thejaswitricon/dockertest/compare/${folder_name}-v$version...${folder_name}-v$version) ($date)"
+          sed -i "/# CHANGELOG/a $changelog_entry" CHANGELOG.md
         continue-on-error: true
 
       - name: Semantic Release Output Summary
