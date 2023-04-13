@@ -3,7 +3,7 @@ on:
     branches: [ master ]
 jobs:
   python:
-    if: ${{ contains(github.event.head_commit.modified, 'applications/python') }}
+    if: ${{ contains(github.event.head_commit.modified, 'applications/app1') }}
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
@@ -21,7 +21,7 @@ jobs:
     - name: Run tests
       run: pytest
   javascript:
-    if: ${{ contains(github.event.head_commit.modified, 'applications/javascript') }}
+    if: ${{ contains(github.event.head_commit.modified, 'applications/app2') }}
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
