@@ -33,11 +33,6 @@ jobs:
           APP_NAME=$(echo "${{ steps.changed_dirs.outputs.dirs }}" | awk '{print tolower($0)}')
           echo "::set-output name=tag_format::${APP_NAME}-v\${version}"
 
-      - name: Update CHANGELOG.md
-        run: |
-        sed -i 's/^## \([0-9]\+\.[0-9]\+\.[0-9]\+\)/## v\1/' CHANGELOG.md
-        commit_message: Update version format in CHANGELOG.md
-
       # https://github.com/marketplace/actions/semantic-release-action#usage
       - name: Semantic Release
         uses: docker://ghcr.io/codfish/semantic-release-action:v2
@@ -49,8 +44,22 @@ jobs:
           additional_packages: |
             ['@semantic-release/changelog', '@semantic-release/git']
           plugins: |
-            ['@semantic-release/commit-analyzer', '@semantic-release/release-notes-generator', ['@semantic-release/changelog', {changelogTitle: '# CHANGELOG'}], '@semantic-release/github', '@semantic-release/git']
-          # specify default branches to add support for the `main` branch
+            [
+              '@semantic-release/commit-analyzer',
+              '@semantic-release/release-notes-generator',
+              [
+                '@semantic-release/changelog',
+                {
+                  changelogFile: 'CHANGELOG.md',
+                  changelogTitle: '# CHANGELOG\n\n',
+                  // use a custom template that includes the app name and version
+                  template:
+                    '- [${{ env.APP_NAME }}-v${{ nextRelease.version }}] - ${{ formatDate "yyyy-mm-dd" nextRelease.date }}\n  * ${{ join commits.[0].notes "\n  * " }}\n\n'
+                }
+              ],
+              '@semantic-release/github',
+              '@semantic-release/git'
+            ]          # specify default branches to add support for the `main` branch
           # which semantic-release doesn't have as a default yet.
           branches: |
             [
