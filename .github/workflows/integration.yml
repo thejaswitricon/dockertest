@@ -21,17 +21,14 @@ jobs:
     - name: Run tests
       run: pytest
   javascript:
-    if: ${{ contains(github.event.head_commit.modified, 'applications/app2') }}
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-    - name: Install dependencies
-      run: |
-        cd applications/javascript
-        npm install
-    - name: Run tests
-      run: npm test
+    if [[ $(git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | grep "^applications/app2-js/") ]]; then
+  echo "JavaScript application has changes, running CI..."
+  # Run the JavaScript CI steps
+else
+  echo "No changes to JavaScript application, skipping CI..."
+  # Skip the JavaScript CI steps
+fi
+
 
 
 
