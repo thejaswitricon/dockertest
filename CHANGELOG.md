@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## [1.4.15](https://github.com/thejaswitricon/dockertest/compare/app1-v1.4.14...app1-v1.4.15) (2023-04-13)
+
+
+### Bug Fixes
+
+* fix the linting issue in app1 ([4bd9fc4](https://github.com/thejaswitricon/dockertest/commit/4bd9fc404409eff22a35c1d20d16e973a95ad5bf))
+* fix the linting issue in app1 ([1eb73aa](https://github.com/thejaswitricon/dockertest/commit/1eb73aa04a3ec4c4f9c857443bc807a17c3af2d2))
+* fix the linting issue in app1 ([eb5e883](https://github.com/thejaswitricon/dockertest/commit/eb5e883cdeb1a1efb0c208c050ef31f8465dadbb))
+* fix the linting issue in app1 ([fc16fad](https://github.com/thejaswitricon/dockertest/commit/fc16fadcd0e52afc75ec0d08eb4eb1efef3042d4))
+* fix the linting issue in app1 ([eb315a0](https://github.com/thejaswitricon/dockertest/commit/eb315a0d19c3aedd20f9f9aeaddb757dd4320837))
+* fix the linting issue in app1 ([521aa34](https://github.com/thejaswitricon/dockertest/commit/521aa34a6d84a4998650de553d789892b38ff8d2))
+
 ## [1.4.13](https://github.com/thejaswitricon/dockertest/compare/app1-v1.4.12...app1-v1.4.13) (2023-04-13)
 
 
