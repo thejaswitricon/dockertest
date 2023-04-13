@@ -27,7 +27,7 @@ jobs:
           echo "::set-output name=dirs::$(git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | awk -F/ '{print $2}' | sort -u)"
 
       # Update the version number in the changelog file
--     - name: Update changelog
+      - name: Update changelog
         id: update_changelog
         run: |
           app_name="${{ steps.changed_dirs.outputs.dirs }}"
