@@ -1,5 +1,16 @@
 # CHANGELOG
 
+## [1.2.4](https://github.com/thejaswitricon/dockertest/compare/app2-v1.2.3...app2-v1.2.4) (2023-04-13)
+
+
+### Bug Fixes
+
+* add features to app1 ([d0cfd4c](https://github.com/thejaswitricon/dockertest/commit/d0cfd4c4fcedf7d06757eaded58897d2dda04180))
+* add features to app1 and app2 ([02dad0b](https://github.com/thejaswitricon/dockertest/commit/02dad0b62407dcf07f6bf555e7cd6cac3dcead91))
+* delete package.json file ([168841a](https://github.com/thejaswitricon/dockertest/commit/168841ad4391ea77aac8cbc37057e13553a1a9f7))
+* fix the linting issue in app1 ([c5e33f8](https://github.com/thejaswitricon/dockertest/commit/c5e33f88248fe2797d18cc0dcbac2eca977f61a1))
+* fix the linting issue in app2 ([175c633](https://github.com/thejaswitricon/dockertest/commit/175c633f1284db30d62d9f2700a201fa28523e24))
+
 ## [1.4.6](https://github.com/thejaswitricon/dockertest/compare/app1-v1.4.5...app1-v1.4.6) (2023-04-13)
 
 
