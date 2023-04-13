@@ -2,8 +2,7 @@ on:
   push:
     branches: [ master ]
     paths:
-      - 'applications/python/**'
-      - 'applications/javascript/**'
+      - 'applications/**'
 
 jobs:
   python-tests:
