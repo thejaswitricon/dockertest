@@ -1,6 +1,13 @@
 # CHANGELOG
 
-## [1.4.30](https://github.com/thejaswitricon/dockertest/compare/app1-v1.4.29...app1-v1.4.30) (2023-04-13)
+## [1.4.31](https://github.com/thejaswitricon/dockertest/compare/app1-v1.4.30...app1-v1.4.31) (2023-04-13)
+
+
+### Bug Fixes
+
+* fix the linting issue in app1 ([4d32e7b](https://github.com/thejaswitricon/dockertest/commit/4d32e7b733e87bdf16fb5a234aefce9e8546ff5f))
+
+## app1-vapp1-v1.4.30-${version} 2023-04-13(https://github.com/thejaswitricon/dockertest/compare/app1-v1.4.29...app1-v1.4.30) (2023-04-13)
 
 
 ### Bug Fixes
