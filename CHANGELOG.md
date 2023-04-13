@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## [1.4.6](https://github.com/thejaswitricon/dockertest/compare/app1-v1.4.5...app1-v1.4.6) (2023-04-13)
+
+
+### Bug Fixes
+
+* delete package.json file ([168841a](https://github.com/thejaswitricon/dockertest/commit/168841ad4391ea77aac8cbc37057e13553a1a9f7))
+* fix the linting issue in app1 ([c5e33f8](https://github.com/thejaswitricon/dockertest/commit/c5e33f88248fe2797d18cc0dcbac2eca977f61a1))
+
 ## [1.4.5](https://github.com/thejaswitricon/dockertest/compare/app1-v1.4.4...app1-v1.4.5) (2023-04-13)
 
 
