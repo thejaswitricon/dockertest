@@ -1,9 +1,14 @@
 on:
   push:
     branches: [ master ]
+    paths:
+      - 'applications/python/**'
+      - 'applications/javascript/**'
+
 jobs:
-  build:
+  python-tests:
     runs-on: ubuntu-latest
+    if: contains(github.event_path, 'applications/python/')
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
@@ -13,9 +18,50 @@ jobs:
         python-version: '3.x'
     - name: Install dependencies
       run: |
-        cd applications/app2
+        cd applications/python
         python -m pip install --upgrade pip
         pip install -r requirements.txt
         pip install pytest
     - name: Run tests
       run: pytest
+
+  javascript-tests:
+    runs-on: ubuntu-latest
+    if: contains(github.event_path, 'applications/javascript/')
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '14.x'
+    - name: Install dependencies
+      run: |
+        cd applications/javascript
+        npm install
+    - name: Run tests
+      run: npm test
+
+
+
+# on:
+#   push:
+#     branches: [ master ]
+# jobs:
+#   build:
+#     runs-on: ubuntu-latest
+#     steps:
+#     - name: Checkout code
+#       uses: actions/checkout@v2
+#     - name: Set up Python
+#       uses: actions/setup-python@v2
+#       with:
+#         python-version: '3.x'
+#     - name: Install dependencies
+#       run: |
+#         cd applications/app2
+#         python -m pip install --upgrade pip
+#         pip install -r requirements.txt
+#         pip install pytest
+#     - name: Run tests
+#       run: pytest
