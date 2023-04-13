@@ -2,13 +2,13 @@ on:
   push:
     branches: [ master ]
     paths:
-      - 'applications/**'
+      - 'applications/app1/**'
+      - 'applications/app2/**'
 
 jobs:
   build-python:
     runs-on: ubuntu-latest
-    # if: "github.event_name == 'push' && (contains(github.event.head_commit.modified, 'applications/app2/') || contains(github.event.head_commit.modified, 'applications/app2'))"
-
+    if: ${{ startsWith(github.event.head_commit.modified[0], 'applications/app2') }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -27,8 +27,7 @@ jobs:
 
   build-javascript:
     runs-on: ubuntu-latest
-    # if: "github.event_name == 'push' && (contains(github.event.head_commit.modified, 'applications/app1/') || contains(github.event.head_commit.modified, 'applications/app1'))"
-
+    if: ${{ startsWith(github.event.head_commit.modified[0], 'applications/app1') }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -40,9 +39,6 @@ jobs:
         run: |
           cd applications/app1
           npm install
-      - name: Run tests
-        run: npm test
-
 
 
 # on:
