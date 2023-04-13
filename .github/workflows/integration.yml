@@ -2,8 +2,7 @@ on:
   push:
     branches: [ master ]
     paths:
-      - 'applications/app1/**'
-      - 'applications/app2/**'
+      - 'applications/**'
 
 jobs:
   build-python:
