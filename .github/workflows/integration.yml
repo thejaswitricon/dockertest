@@ -8,7 +8,7 @@ on:
 jobs:
   build-python:
     runs-on: ubuntu-latest
-    if: ${{ startsWith(github.event.head_commit.modified[0], 'applications/app2') }}
+    if: ${{ contains(github.event.head_commit.modified, 'applications/app2') }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -27,7 +27,7 @@ jobs:
 
   build-javascript:
     runs-on: ubuntu-latest
-    if: ${{ startsWith(github.event.head_commit.modified[0], 'applications/app1') }}
+    if: ${{ contains(github.event.head_commit.modified, 'applications/app1') }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
