@@ -36,7 +36,7 @@ jobs:
       - name: Add new version to changelog
         id: add_version_to_changelog
         run: |
-          sed -i "s/\[${version}\]/[app1-1.0.0] - $(date +'%Y-%m-%d')/" CHANGELOG.md        
+          sed -i "s/\[^\d+\.\d+\.\d+$\]/[app1-1.0.0] - $(date +'%Y-%m-%d')/" CHANGELOG.md        
         continue-on-error: true 
 
       # https://github.com/marketplace/actions/semantic-release-action#usage
