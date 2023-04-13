@@ -33,12 +33,6 @@ jobs:
           APP_NAME=$(echo "${{ steps.changed_dirs.outputs.dirs }}" | awk '{print tolower($0)}')
           echo "::set-output name=tag_format::${APP_NAME}-v\${version}"
 
-      - name: Add new version to changelog
-        id: add_version_to_changelog
-        run: |
-          sed -i "2i- [$(echo ${{ steps.update_tag_format.outputs.tag_format }} | sed 's/\$//g')]" CHANGELOG.md
-        continue-on-error: true 
-
       # https://github.com/marketplace/actions/semantic-release-action#usage
       - name: Semantic Release
         uses: docker://ghcr.io/codfish/semantic-release-action:v2
@@ -57,6 +51,12 @@ jobs:
             [
               'master'
             ]
+
+      - name: Modify CHANGELOG.md file
+        id: modify_changelog
+        run: |
+          sed -i "s/\[${{ steps.update_tag_format.outputs.tag_format }}\]/[${{ steps.update_tag_format.outputs.tag_format }}] (${{ github.event.release.published_at | from8601 }})/" CHANGELOG.md
+
       - name: Semantic Release Output Summary
         id: semantic_summary
         run: |
