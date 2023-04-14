@@ -32,8 +32,15 @@ jobs:
         run: |
           APP_NAME=$(echo "${{ steps.changed_dirs.outputs.dirs }}" | awk '{print tolower($0)}')
           echo "::set-output name=tag_format::${APP_NAME}-v\${version}"
+      - name: Set version number
+          run: echo "VERSION=$(semver --increment minor $(git describe --tags --abbrev=0))" >> $GITHUB_ENV
 
-       
+      - name: Add new version to changelog
+        id: add_version_to_changelog
+        run: |
+          version=v${{ env.VERSION }}
+          sed -i "s/\[[0-9]\+\.[0-9]\+\.[0-9]\+\]/${version} $(date +'%Y-%m-%d')/" CHANGELOG.md        
+        continue-on-error: true 
 
       # https://github.com/marketplace/actions/semantic-release-action#usage
       - name: Semantic Release
@@ -53,15 +60,6 @@ jobs:
             [
               'master'
             ]
-
-      - name: Add new version to changelog
-        id: add_version_to_changelog
-        run: |
-          APP_NAME=$(echo "${{ steps.changed_dirs.outputs.dirs }}" | awk '{print tolower($0)}')
-          version=$(git describe --tags --abbrev=0 --match "${APP_NAME}-v*")
-          sed -i "s/\[[0-9]\+\.[0-9]\+\.[0-9]\+\]/${version} $(date +'%Y-%m-%d')/" CHANGELOG.md        
-        continue-on-error: true
-
       - name: Semantic Release Output Summary
         id: semantic_summary
         run: |
