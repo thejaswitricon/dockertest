@@ -51,13 +51,16 @@ jobs:
             [
               'master'
             ]
-
-      - name: Add new version to changelog
-        id: add_version_to_changelog
-        run: |
+          run: |
           version=$(git describe --tags --abbrev=0 --exact-match)
           sed -i "s/\[[0-9]\+\.[0-9]\+\.[0-9]\+\]/${version} $(date +'%Y-%m-%d')/" CHANGELOG.md        
-        continue-on-error: true 
+        continue-on-error: true
+      # - name: Add new version to changelog
+      #   id: add_version_to_changelog
+      #   run: |
+      #     version=$(git describe --tags --abbrev=0 --exact-match)
+      #     sed -i "s/\[[0-9]\+\.[0-9]\+\.[0-9]\+\]/${version} $(date +'%Y-%m-%d')/" CHANGELOG.md        
+      #   continue-on-error: true 
 
       - name: Semantic Release Output Summary
         id: semantic_summary
