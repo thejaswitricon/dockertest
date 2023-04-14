@@ -33,20 +33,11 @@ jobs:
           APP_NAME=$(echo "${{ steps.changed_dirs.outputs.dirs }}" | awk '{print tolower($0)}')
           echo "::set-output name=tag_format::${APP_NAME}-v\${version}"
 
-      # Update the version format in the changelog
-      - name: Update version format in changelog
-        id: update_changelog_version_format
-        run: |
-          APP_NAME=$(echo "${{ steps.changed_dirs.outputs.dirs }}" | awk '{print tolower($0)}')
-          version=$(git describe --tags --abbrev=0)
-          sed -i "s/\[[0-9]\+\.[0-9]\+\.[0-9]\+\]/${APP_NAME}-v${version}/" CHANGELOG.md
-
-      # Add new version to changelog
       - name: Add new version to changelog
         id: add_version_to_changelog
         run: |
           version=$(git describe --tags --abbrev=0)
-          sed -i "s/\[${APP_NAME}-v[0-9]\+\.[0-9]\+\.[0-9]\+\]/${APP_NAME}-v${version} $(date +'%Y-%m-%d')/" CHANGELOG.md        
+          sed -i "s/\[[0-9]\+\.[0-9]\+\.[0-9]\+\]/${version} $(date +'%Y-%m-%d')/" CHANGELOG.md        
         continue-on-error: true 
 
       # https://github.com/marketplace/actions/semantic-release-action#usage
@@ -60,7 +51,27 @@ jobs:
           additional_packages: |
             ['@semantic-release/changelog', '@semantic-release/git']
           plugins: |
-            ['@semantic-release/commit-analyzer', '@semantic-release/release-notes-generator', ['@semantic-release/changelog', {changelogTitle: '# CHANGELOG'}], '@semantic-release/github', '@semantic-release/git']
+            [
+              '@semantic-release/commit-analyzer',
+              '@semantic-release/release-notes-generator',
+              [
+                '@semantic-release/changelog',
+                {
+                  changelogTitle: '# CHANGELOG',
+                  changelogFile: 'CHANGELOG.md',
+                  changelogTemplate: '## {{type}} ({{date}})\n{{#each commits}}- {{this.subject}} [{{this.hash}}](https://github.com/user/repo/commit/{{this.hash}})\n{{/each}}\n\n',
+                  tagFormat: '${{ steps.update_tag_format.outputs.tag_format }}'
+                }
+              ],
+              '@semantic-release/github',
+              [
+                '@semantic-release/git',
+                {
+                  assets: ['CHANGELOG.md', 'package.json'],
+                  message: 'chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}'
+                }
+              ]
+            ]
           # specify default branches to add support for the `main` branch
           # which semantic-release doesn't have as a default yet.
           branches: |
@@ -79,8 +90,9 @@ jobs:
         run: |
           echo "### Semantic Version = ${{ steps.semantic.outputs.release-version }}\`" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
-          echo "${{
-
+          echo "${{ toJson(steps.semantic.outputs) }}" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+        continue-on-error: true
 
 
 
