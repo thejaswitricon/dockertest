@@ -59,7 +59,7 @@ jobs:
                 {
                   changelogTitle: '# CHANGELOG',
                   changelogFile: 'CHANGELOG.md',
-                  changelogTemplate: '## {{type}} ({{date}})\n{{#each commits}}- {{this.subject}} [{{this.hash}}](https://github.com/user/repo/commit/{{this.hash}})\n{{/each}}\n\n',
+                  changelogTemplate: '## {{type}} ({{date}})\n{{#each commits}}- {{this.subject}} [{{this.hash}}]\n{{/each}}\n\n',
                   tagFormat: '${{ steps.update_tag_format.outputs.tag_format }}'
                 }
               ],
