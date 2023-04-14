@@ -36,9 +36,9 @@ jobs:
       - name: Add new version to changelog
         id: add_version_to_changelog
         run: |
-          version=${{ steps.semantic.outputs.release-version }}
-          sed -i "s/\[[0-9]\+\.[0-9]\+\.[0-9]\+\]/${version} $(date +'%Y-%m-%d')/" CHANGELOG.md
-        continue-on-error: true
+          version=$(git describe --tags --abbrev=0)
+          sed -i "s/\[[0-9]\+\.[0-9]\+\.[0-9]\+\]/${version} $(date +'%Y-%m-%d')/" CHANGELOG.md        
+        continue-on-error: true 
 
       # https://github.com/marketplace/actions/semantic-release-action#usage
       - name: Semantic Release
@@ -58,7 +58,6 @@ jobs:
             [
               'master'
             ]
-       
       - name: Semantic Release Output Summary
         id: semantic_summary
         run: |
