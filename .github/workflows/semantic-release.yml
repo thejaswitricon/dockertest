@@ -33,11 +33,12 @@ jobs:
           APP_NAME=$(echo "${{ steps.changed_dirs.outputs.dirs }}" | awk '{print tolower($0)}')
           echo "::set-output name=tag_format::${APP_NAME}-v\${version}"
 
-      # - name: Add new version to changelog
-      #   id: add_version_to_changelog
-      #   run: |
-      #     version=$(git describe --tags --abbrev=0)
-      #   continue-on-error: true 
+      - name: Add new version to changelog
+        id: add_version_to_changelog
+        run: |
+          version=$(git describe --tags --abbrev=0)
+          sed -i "s/\[[0-9]\+\.[0-9]\+\.[0-9]\+\]/${version} $(date +'%Y-%m-%d')/" CHANGELOG.md        
+        continue-on-error: true 
 
       # https://github.com/marketplace/actions/semantic-release-action#usage
       - name: Semantic Release
@@ -50,7 +51,8 @@ jobs:
           additional_packages: |
             ['@semantic-release/changelog', '@semantic-release/git']
           plugins: |
-            ['@semantic-release/commit-analyzer', '@semantic-release/release-notes-generator', ['@semantic-release/changelog', {changelogTitle: '# CHANGELOG'}], '@semantic-release/github', '@semantic-release/git']
+            ["@semantic-release/commit-analyzer","@semantic-release/release-notes-generator","@semantic-release/github",["@semantic-release/git", {"assets": ["CHANGELOG.md"],"message": "chore(release): ${nextRelease.version} [skip ci]","tagFormat": "${version}"}]
+  
           # specify default branches to add support for the `main` branch
           # which semantic-release doesn't have as a default yet.
           branches: |
@@ -58,13 +60,11 @@ jobs:
               'master'
             ]
 
-      # Get the latest version tag
-      - name: Get latest version tag
-        run: |
-          version=$(git describe --tags --abbrev=0)
-          echo "::set-output name=version::$version"
-          sed -i "s/\[[0-9]\+\.[0-9]\+\.[0-9]\+\]/${version} $(date +'%Y-%m-%d')/" CHANGELOG.md        
-
+      # # Get the latest version tag
+      # - name: Get latest version tag
+      #   run: |
+      #     version=$(git describe --tags --abbrev=0)
+      #     echo "::set-output name=version::$version"
 
       - name: Semantic Release Output Summary
         id: semantic_summary
