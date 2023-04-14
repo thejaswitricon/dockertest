@@ -1,0 +1,7 @@
+{{version}} ({{moment date format="YYYY-MM-DD"}})
+--------------------------------------------------
+{{#each commits}}
+{{#with (firstLine this.message) as |title|}}
+- {{title}} ([{{this.hash}}]({{../repository.url}}/commit/{{this.hash}}))
+{{/with}}
+{{/each}}
