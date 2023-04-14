@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## [1.2.17](https://github.com/thejaswitricon/dockertest/compare/app2-v1.2.16...app2-v1.2.17) (2023-04-14)
+
+
+### Bug Fixes
+
+* fix the linting issue in app2 ([c7dcbc1](https://github.com/thejaswitricon/dockertest/commit/c7dcbc170e8d76d0e8a2b4001371ad83003a8ac0))
+
 ## [1.2.16](https://github.com/thejaswitricon/dockertest/compare/app2-v1.2.15...app2-v1.2.16) (2023-04-14)
 
 
