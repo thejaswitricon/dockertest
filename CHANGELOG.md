@@ -1,4 +1,11 @@
-## [1.2.24](https://github.com/thejaswitricon/dockertest/compare/app2-v1.2.23...app2-v1.2.24) (2023-04-14)
+## [1.2.25](https://github.com/thejaswitricon/dockertest/compare/app2-v1.2.24...app2-v1.2.25) (2023-04-14)
+
+
+### Bug Fixes
+
+* fix the linting issue in app2 ([273fae4](https://github.com/thejaswitricon/dockertest/commit/273fae4f86848e297e1b47ac61ecc2b876892fff))
+
+## app2-v1.2.24 2023-04-14(https://github.com/thejaswitricon/dockertest/compare/app2-v1.2.23...app2-v1.2.24) (2023-04-14)
 
 
 ### Bug Fixes
