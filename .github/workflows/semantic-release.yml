@@ -47,7 +47,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.PAT_GITHUB }}
         with:
-          tag_format: '${{ steps.update_tag_format.outputs.tag_format }} [{{name}}]'
+          tag_format: '${{ steps.update_tag_format.outputs.tag_format }} [v${{ github.event.release.tag_name }}]'
           additional_packages: |
             ['@semantic-release/changelog', '@semantic-release/git']
           plugins: |
