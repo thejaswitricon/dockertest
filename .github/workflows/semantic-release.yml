@@ -37,7 +37,7 @@ jobs:
         id: add_version_to_changelog
         run: |
           version=$(git describe --tags --abbrev=0)
-          sed -i -E "s/(\[${{ env.RELEASE_VERSION }}\])/${{ steps.update_tag_format.outputs.tag_format }}/" CHANGELOG.md        
+          sed -i "s/\[[0-9]\+\.[0-9]\+\.[0-9]\+\]/${version} $(date +'%Y-%m-%d')/" CHANGELOG.md        
         continue-on-error: true 
 
       # https://github.com/marketplace/actions/semantic-release-action#usage
@@ -47,7 +47,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.PAT_GITHUB }}
         with:
-          tag_format: '${{ steps.update_tag_format.outputs.tag_format }}'
+          tag_format: '${{ steps.update_tag_format.outputs.tag_format }} [{{name}}]'
           additional_packages: |
             ['@semantic-release/changelog', '@semantic-release/git']
           plugins: |
