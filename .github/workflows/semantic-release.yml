@@ -56,8 +56,8 @@ jobs:
       '@semantic-release/github',
       ['@semantic-release/git', {
         assets: ['CHANGELOG.md'],
-        message: 'chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}',
-        tag: '${{ steps.update_tag_format.outputs.tag_format }}'
+        message: 'chore(release): ${nextRelease.version} [abc]\n\n${nextRelease.notes}',
+        
       }]]
           # specify default branches to add support for the `main` branch
           # which semantic-release doesn't have as a default yet.
