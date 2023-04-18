@@ -23,11 +23,9 @@ jobs:
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Debug
-        run: echo ${{ env.VERSION }}
-
+        
         with:
-          tag_name: ${{ env.VERSION }}-${{ env.CHANGED_FOLDERS }}
+          tag_name: ${{ env.VERSION }}
           release_name: Release ${{ env.VERSION }}-${{ env.CHANGED_FOLDERS }}
           body: |
             Changes in this release:
