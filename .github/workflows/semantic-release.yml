@@ -21,22 +21,13 @@ jobs:
           fetch-depth: 0
 
       # Get the name of the directory that was changed
-      - name: Get changed directories
-        id: changed_dirs
-        run: |
-          echo "::set-output name=dirs::$(git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | awk -F/ '{print $2}' | sort -u)"
+      APP_NAME=$(git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | awk -F/ '{print $2}' | sort -u)
 
       # Update the tag format to include the name of the directory
-      - name: Update tag format
-        id: update_tag_format
-        run: |
-          APP_NAME=$(echo "${{ steps.changed_dirs.outputs.dirs }}" | awk '{print tolower($0)}')
-          echo "::set-output name=tag_format::${APP_NAME}-v\${version}"
+      TAG_FORMAT="${APP_NAME}-v${{ steps.semantic.outputs.release-version }}"
 
-      - name: Update changelog
-        run: |
-          version=$(echo "${{ steps.update_tag_format.outputs.tag_format }}" | cut -d '-' -f 2)
-          sed -i "1s/^/## [${version}](${GITHUB_SERVER_URL}/${{ github.repository }}/compare/${{ github.event.before }}...${{ github.sha }})\n\n/" CHANGELOG.md          
+      # Update the version number in the CHANGELOG.md file
+      sed -i -E "s/${APP_NAME}-v[0-9]+\.[0-9]+\.[0-9]+/${TAG_FORMAT}/" CHANGELOG.md
         continue-on-error: true 
 
       # https://github.com/marketplace/actions/semantic-release-action#usage
