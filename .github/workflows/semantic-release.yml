@@ -2,10 +2,9 @@ name: my-app
 on:
   push:
     branches:
-      - master
+      - semantic-release
     paths:
       - 'applications/**'
-
 permissions: write-all
 jobs:
   build:
