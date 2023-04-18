@@ -36,8 +36,12 @@ jobs:
       - name: Add new version to changelog
         id: add_version_to_changelog
         run: |
-          version=$(git describe --tags --abbrev=0)
-          sed -i "s/\[[0-9]\+\.[0-9]\+\.[0-9]\+\]/thejaswiiiiiiii$(date +'%Y-%m-%d')/" CHANGELOG.md        
+          dir_name=${{ steps.changed_dirs.outputs.dirs }}
+          dir_name="${dir_name%/}" # remove trailing slash
+          dir_name="${dir_name##*/}" # get last segment of path
+          version=$(git describe --tags --exact-match --abbrev=0 --match="${dir_name}-v[0-9]*.[0-9]*.[0-9]*" 2>/dev/null || echo "No matching tag found")
+
+          sed -i "s/\[[0-9]\+\.[0-9]\+\.[0-9]\+\]/${version} $(date +'%Y-%m-%d')/" CHANGELOG.md        
         continue-on-error: true 
 
       # https://github.com/marketplace/actions/semantic-release-action#usage
