@@ -21,13 +21,23 @@ jobs:
           fetch-depth: 0
 
       # Get the name of the directory that was changed
-      APP_NAME=$(git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | awk -F/ '{print $2}' | sort -u)
+      - name: Get changed directories
+        id: changed_dirs
+        run: |
+          echo "::set-output name=dirs::$(git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | awk -F/ '{print $2}' | sort -u)"
 
       # Update the tag format to include the name of the directory
-      TAG_FORMAT="${APP_NAME}-v${{ steps.semantic.outputs.release-version }}"
+      - name: Update tag format
+        id: update_tag_format
+        run: |
+          APP_NAME=$(echo "${{ steps.changed_dirs.outputs.dirs }}" | awk '{print tolower($0)}')
+          echo "::set-output name=tag_format::${APP_NAME}-v\${version}"
 
-      # Update the version number in the CHANGELOG.md file
-      sed -i -E "s/${APP_NAME}-v[0-9]+\.[0-9]+\.[0-9]+/${TAG_FORMAT}/" CHANGELOG.md
+      - name: Add new version to changelog
+        id: add_version_to_changelog
+        run: |
+          version="${APP_NAME}-v${{ steps.semantic.outputs.release-version }}"
+          sed -i "s/\[[0-9]\+\.[0-9]\+\.[0-9]\+\]/${version} $(date +'%Y-%m-%d')/" CHANGELOG.md        
         continue-on-error: true 
 
       # https://github.com/marketplace/actions/semantic-release-action#usage
