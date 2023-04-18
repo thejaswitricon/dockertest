@@ -12,6 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       VERSION: ${{ github.ref }}
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -22,6 +23,9 @@ jobs:
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Debug
+        run: echo ${{ env.VERSION }}
+
         with:
           tag_name: ${{ env.VERSION }}-${{ env.CHANGED_FOLDERS }}
           release_name: Release ${{ env.VERSION }}-${{ env.CHANGED_FOLDERS }}
