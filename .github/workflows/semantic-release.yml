@@ -10,13 +10,13 @@ permissions: write-all
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      VERSION: ${{ github.ref }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Set version number
-        run: echo "::set-env name=VERSION::$(git describe --tags $(git rev-list --tags --max-count=1))"
       - name: Get changed folders
-        run: echo "::set-env name=CHANGED_FOLDERS::$(git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | cut -d/ -f1 | uniq)"
+        run: echo "CHANGED_FOLDERS=$(git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | cut -d/ -f1 | uniq)" >> $GITHUB_ENV
       - name: Create release
         id: create_release
         uses: actions/create-release@v1
