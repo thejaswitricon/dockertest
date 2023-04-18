@@ -37,7 +37,7 @@ jobs:
         id: add_version_to_changelog
         run: |
           version=$(git describe --tags --abbrev=0)
-          sed -i "s/\[[0-9]\+\.[0-9]\+\.[0-9]\+\]/${version} $(date +'%Y-%m-%d')/" CHANGELOG.md        
+          sed -i "s/\[[0-9]\+\.[0-9]\+\.[0-9]\+\]/${APP_NAME}-v${version} $(date +'%Y-%m-%d')/" CHANGELOG.md        
         continue-on-error: true 
 
       # https://github.com/marketplace/actions/semantic-release-action#usage
@@ -47,12 +47,12 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.PAT_GITHUB }}
         with:
-          tag_format: '${{ steps.update_tag_format.outputs.tag_format }} [v${{ github.event.release.tag_name }}]'
+          tag_format: '${{ steps.update_tag_format.outputs.tag_format }}'
           additional_packages: |
             ['@semantic-release/changelog', '@semantic-release/git']
           plugins: |
             ['@semantic-release/commit-analyzer', '@semantic-release/release-notes-generator',
-            ['@semantic-release/changelog', {changelogTitle: '# CHANGELOG', tagPrefix : '${{ steps.changed_dirs.outputs.dirs }}-v'}],
+            ['@semantic-release/changelog', {changelogTitle: '# CHANGELOG'}],
             '@semantic-release/github', '@semantic-release/git']
           # specify default branches to add support for the `main` branch
           # which semantic-release doesn't have as a default yet.
@@ -60,12 +60,6 @@ jobs:
             [
               'master'
             ]
-
-      # # Get the latest version tag
-      # - name: Get latest version tag
-      #   run: |
-      #     version=$(git describe --tags --abbrev=0)
-      #     echo "::set-output name=version::$version"
 
       - name: Semantic Release Output Summary
         id: semantic_summary
