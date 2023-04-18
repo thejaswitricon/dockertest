@@ -39,8 +39,8 @@ jobs:
         run: |
           version=$(git describe --tags --abbrev=0)
           dir_name=${{ steps.changed_dirs.outputs.dirs }}
-          dir_name="${dir_name%/}" # remove trailing slash
-          dir_name="${dir_name##*/}" # get last segment of path
+          dir_name="${dir_name%/}" 
+          dir_name="${dir_name##*/}"
           sed -i "s/\[[0-9]\+\.[0-9]\+\.[0-9]\+\]/${dir_name}-${version}/" CHANGELOG.md
         continue-on-error: true 
 
