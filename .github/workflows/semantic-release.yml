@@ -1,4 +1,5 @@
-name: my-app
+name: Semantic Release for Apps
+
 on:
   push:
     branches:
@@ -7,101 +8,64 @@ on:
       - 'applications/**'
 
 permissions: write-all
+
 jobs:
-  build:
+  release:
+    name: Semantic Release
     runs-on: ubuntu-latest
-    env:
-      VERSION: ${{ github.ref }}
-
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v2
-      - name: Get changed folders
-        run: echo "CHANGED_FOLDERS=$(git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | cut -d/ -f1 | uniq)" >> $GITHUB_ENV
-      - name: Create release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        
+        id: checkout
         with:
-          tag_name: ${{ env.VERSION }}-${{ env.CHANGED_FOLDERS }}
-          release_name: Release ${{ env.VERSION }}-${{ env.CHANGED_FOLDERS }}
-          body: |
-            Changes in this release:
-            - Added support for ${{ env.CHANGED_FOLDERS }}
-          draft: false
-          prerelease: false
+          fetch-depth: 0
 
+      # Get the name of the directory that was changed
+      - name: Get changed directories
+        id: changed_dirs
+        run: |
+          echo "::set-output name=dirs::$(git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | awk -F/ '{print $2}' | sort -u)"
 
-# name: Semantic Release for Apps
+      # Update the tag format to include the name of the directory
+      - name: Update tag format
+        id: update_tag_format
+        run: |
+          APP_NAME=$(echo "${{ steps.changed_dirs.outputs.dirs }}" | awk '{print tolower($0)}')
+          echo "::set-output name=tag_format::${APP_NAME}-v\${version}"
 
-# on:
-#   push:
-#     branches:
-#       - master
-#     paths:
-#       - 'applications/**'
+      # - name: Add new version to changelog
+      #   id: add_version_to_changelog
+      #   run: |
+      #     version=$(git describe --tags --abbrev=0)
+      #     sed -i "s/\[[0-9]\+\.[0-9]\+\.[0-9]\+\]/${APP_NAME}-v${version} $(date +'%Y-%m-%d')/" CHANGELOG.md        
+      #   continue-on-error: true 
 
-# permissions: write-all
+      # https://github.com/marketplace/actions/semantic-release-action#usage
+      - name: Semantic Release
+        uses: docker://ghcr.io/codfish/semantic-release-action:v2
+        id: semantic
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT_GITHUB }}
+        with:
+          tag_format: '${{ steps.update_tag_format.outputs.tag_format }}'
+          additional_packages: |
+            ['@semantic-release/changelog', '@semantic-release/git']
+          plugins: |
+            ['@semantic-release/commit-analyzer', '@semantic-release/release-notes-generator',
+            ['@semantic-release/changelog', {changelogTitle: '# CHANGELOG'}],
+            '@semantic-release/github', '@semantic-release/git']
+          # specify default branches to add support for the `main` branch
+          # which semantic-release doesn't have as a default yet.
+          branches: |
+            [
+              'master'
+            ]
 
-# jobs:
-#   release:
-#     name: Semantic Release
-#     runs-on: ubuntu-latest
-#     steps:
-#       - name: Checkout
-#         uses: actions/checkout@v2
-#         id: checkout
-#         with:
-#           fetch-depth: 0
-
-#       # Get the name of the directory that was changed
-#       - name: Get changed directories
-#         id: changed_dirs
-#         run: |
-#           echo "::set-output name=dirs::$(git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | awk -F/ '{print $2}' | sort -u)"
-
-#       # Update the tag format to include the name of the directory
-#       - name: Update tag format
-#         id: update_tag_format
-#         run: |
-#           APP_NAME=$(echo "${{ steps.changed_dirs.outputs.dirs }}" | awk '{print tolower($0)}')
-#           echo "::set-output name=tag_format::${APP_NAME}-v\${version}"
-
-#       # - name: Add new version to changelog
-#       #   id: add_version_to_changelog
-#       #   run: |
-#       #     version=$(git describe --tags --abbrev=0)
-#       #     sed -i "s/\[[0-9]\+\.[0-9]\+\.[0-9]\+\]/${APP_NAME}-v${version} $(date +'%Y-%m-%d')/" CHANGELOG.md        
-#       #   continue-on-error: true 
-
-#       # https://github.com/marketplace/actions/semantic-release-action#usage
-#       - name: Semantic Release
-#         uses: docker://ghcr.io/codfish/semantic-release-action:v2
-#         id: semantic
-#         env:
-#           GITHUB_TOKEN: ${{ secrets.PAT_GITHUB }}
-#         with:
-#           tag_format: '${{ steps.update_tag_format.outputs.tag_format }}'
-#           additional_packages: |
-#             ['@semantic-release/changelog', '@semantic-release/git']
-#           plugins: |
-#             ['@semantic-release/commit-analyzer', '@semantic-release/release-notes-generator',
-#             ['@semantic-release/changelog', {changelogTitle: '# CHANGELOG'}],
-#             '@semantic-release/github', '@semantic-release/git']
-#           # specify default branches to add support for the `main` branch
-#           # which semantic-release doesn't have as a default yet.
-#           branches: |
-#             [
-#               'master'
-#             ]
-
-#       - name: Semantic Release Output Summary
-#         id: semantic_summary
-#         run: |
-#           echo "### Semantic Version = ${{ steps.semantic.outputs.release-version }}\`" >> $GITHUB_STEP_SUMMARY
-#           echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
-#           echo "${{ toJson(steps.semantic.outputs) }}" >> $GITHUB_STEP_SUMMARY
-#           echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
-#         continue-on-error: true
+      - name: Semantic Release Output Summary
+        id: semantic_summary
+        run: |
+          echo "### Semantic Version = ${{ steps.semantic.outputs.release-version }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          echo "${{ toJson(steps.semantic.outputs) }}" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+        continue-on-error: true
