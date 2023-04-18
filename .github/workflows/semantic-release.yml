@@ -33,13 +33,11 @@ jobs:
           APP_NAME=$(echo "${{ steps.changed_dirs.outputs.dirs }}" | awk '{print tolower($0)}')
           echo "::set-output name=tag_format::${APP_NAME}-v\${version}"
 
-      # Update the version in CHANGELOG.md with the name of the directory
-      - name: Update CHANGELOG.md with version and directory name
-        id: update_changelog
+      - name: Add new version to changelog
+        id: add_version_to_changelog
         run: |
           version=$(git describe --tags --abbrev=0)
-          
-          sed -i "s/\[[0-9]\+\.[0-9]\+\.[0-9]\+\]/Thejaswiiiiiiiiiii-${version}/" CHANGELOG.md
+          sed -i "s/\[[0-9]\+\.[0-9]\+\.[0-9]\+\]/thejaswiiiiiiii$(date +'%Y-%m-%d')/" CHANGELOG.md        
         continue-on-error: true 
 
       # https://github.com/marketplace/actions/semantic-release-action#usage
@@ -48,8 +46,6 @@ jobs:
         id: semantic
         env:
           GITHUB_TOKEN: ${{ secrets.PAT_GITHUB }}
-        needs:
-          - update_changelog
         with:
           tag_format: '${{ steps.update_tag_format.outputs.tag_format }}'
           additional_packages: |
@@ -62,6 +58,7 @@ jobs:
             [
               'master'
             ]
+
       # # Get the latest version tag
       # - name: Get latest version tag
       #   run: |
