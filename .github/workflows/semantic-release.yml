@@ -51,15 +51,14 @@ jobs:
           additional_packages: |
             ['@semantic-release/changelog', '@semantic-release/git']
           plugins: |
-            ['@semantic-release/commit-analyzer', '@semantic-release/release-notes-generator',
-            ['@semantic-release/changelog', {changelogTitle: '# CHANGELOG'}],
-            '@semantic-release/github',
-            ['@semantic-release/git', {
-              assets: ['CHANGELOG.md'],
-              message: 'chore(release): ${nextTag} [skip ci]\n\n${nextTagNotes}',
-              tag: '${{ steps.update_tag_format.outputs.tag_format }}'
-            }]]
-          
+      ['@semantic-release/commit-analyzer', '@semantic-release/release-notes-generator',
+      ['@semantic-release/changelog', {changelogTitle: '# CHANGELOG'}],
+      '@semantic-release/github',
+      ['@semantic-release/git', {
+        assets: ['CHANGELOG.md'],
+        message: 'chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}',
+        tag: '${{ steps.update_tag_format.outputs.tag_format }}'
+      }]]
           # specify default branches to add support for the `main` branch
           # which semantic-release doesn't have as a default yet.
           branches: |
