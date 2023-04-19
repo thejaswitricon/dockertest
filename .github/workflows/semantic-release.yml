@@ -8,7 +8,7 @@ on:
       - 'applications/**'
     tags:
       - v[0-9]+.[0-9]+.[0-9]+
-
+permissions: write-all
 jobs:
   deploy:
     runs-on: ubuntu-latest
