@@ -6,8 +6,8 @@ on:
       - master
     paths:
       - 'applications/**'
-    tags:
-      - v[0-9]+.[0-9]+.[0-9]+
+    # tags:
+    #   - v[0-9]+.[0-9]+.[0-9]+
 
 permissions: write-all
 
