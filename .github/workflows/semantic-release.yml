@@ -49,9 +49,9 @@ jobs:
         with:
           tag_format: '${{ steps.update_tag_format.outputs.tag_format }}'
           additional_packages: |
-            ['@semantic-release/changelog', '@semantic-release/git']
+            ['@semantic-release/git']
           plugins: |
-            ['@semantic-release/commit-analyzer','@semantic-release/release-notes-generator',['@semantic-release/changelog', { changelogTitle: 'lllllll', tagPrefix: '## app1-v' }],'@semantic-release/github','@semantic-release/git']          
+            ['@semantic-release/commit-analyzer','@semantic-release/release-notes-generator','@semantic-release/github','@semantic-release/git']          
           # specify default branches to add support for the `main` branch
           # which semantic-release doesn't have as a default yet.
           branches: |
