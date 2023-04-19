@@ -1,6 +1,13 @@
 # CHANGELOG
 
-## [1.4.5](https://github.com/thejaswitricon/dockertest/compare/app2-v1.4.4...app2-v1.4.5) (2023-04-19)
+## [1.4.6](https://github.com/thejaswitricon/dockertest/compare/app2-v1.4.5...app2-v1.4.6) (2023-04-19)
+
+
+### Bug Fixes
+
+* app2 ([40985a1](https://github.com/thejaswitricon/dockertest/commit/40985a153475b7d93ae67690253c558ae6914100))
+
+## app2-v1.4.5 2023-04-19(https://github.com/thejaswitricon/dockertest/compare/app2-v1.4.4...app2-v1.4.5) (2023-04-19)
 
 
 ### Bug Fixes
