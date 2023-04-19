@@ -1,3 +1,18 @@
+# CHANGELOG
+
+## [1.4.11](https://github.com/thejaswitricon/dockertest/compare/app2-v1.4.10...app2-v1.4.11) (2023-04-19)
+
+
+### Bug Fixes
+
+* app2 ([1867bbf](https://github.com/thejaswitricon/dockertest/commit/1867bbf56be6e5f25e3582d1893d29564b345cd0))
+* app2 ([5c72e1d](https://github.com/thejaswitricon/dockertest/commit/5c72e1d8e85407b999271a149afff446dcc4b7cd))
+* app2 ([5058580](https://github.com/thejaswitricon/dockertest/commit/5058580c43f90cafcee3d0486e7fe1f2c32892e4))
+* app2 ([cd26395](https://github.com/thejaswitricon/dockertest/commit/cd263953a07a1a658b026bb373fb2763a0344424))
+* app2 ([864973d](https://github.com/thejaswitricon/dockertest/commit/864973d641c6f44c15d01fc24aeb00a9b6041668))
+* app2 ([f3d8be4](https://github.com/thejaswitricon/dockertest/commit/f3d8be41fa0aa037c679921dbd4d241d48263b87))
+* app2 ([3a1081e](https://github.com/thejaswitricon/dockertest/commit/3a1081eb153b1f251a76d4be310d1a83ca14e897))
+
 lllllll
 
 ## app2-v1.4.9 2023-04-19(https://github.com/thejaswitricon/dockertest/compare/app2-v1.4.8...app2-v1.4.9) (2023-04-19)
