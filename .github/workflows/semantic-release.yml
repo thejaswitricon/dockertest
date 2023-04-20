@@ -52,17 +52,17 @@ jobs:
           plugins: |
             [
               '@semantic-release/commit-analyzer',
-              '@semantic-release/release-notes-generator',
               [
-                '@semantic-release/changelog',
+                '@semantic-release/release-notes-generator',
                 {
-                  changelogTitle: '# CHANGELOG',
                   tagFormat: '${{ steps.update_tag_format.outputs.tag_format }}'
                 }
               ],
+              [      '@semantic-release/changelog',      {        changelogTitle: '# CHANGELOG',        tagFormat: '${{ steps.update_tag_format.outputs.tag_format }}'      }    ],
               '@semantic-release/github',
               '@semantic-release/git'
             ]
+
           # specify default branches to add support for the `main` branch
           # which semantic-release doesn't have as a default yet.
           branches: |
