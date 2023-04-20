@@ -40,6 +40,18 @@ jobs:
           sed -i "s/\[[0-9]\+\.[0-9]\+\.[0-9]\+\]/[${version}] $(date +'%Y-%m-%d')/" CHANGELOG.md        
         continue-on-error: true 
 
+        # Generate release notes
+      - name: Generate Release Notes
+        id: release_notes
+        uses: actions/github-script@v4
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT_GITHUB }}
+        with:
+          script: |
+            const { data: { body } } = await octokit.repos.getLatestRelease({owner: context.repo.owner, repo: context.repo.repo})
+            const releaseNotes = body + `\n\nRelease version: \${{ steps.semantic.outputs.release-version }}`
+            await octokit.repos.updateRelease({owner: context.repo.owner, repo: context.repo.repo, release_id: context.payload.release.id, body: releaseNotes})
+
       # https://github.com/marketplace/actions/semantic-release-action#usage
       - name: Semantic Release
         uses: docker://ghcr.io/codfish/semantic-release-action:v2
