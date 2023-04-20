@@ -51,8 +51,37 @@ jobs:
           additional_packages: |
             ['@semantic-release/changelog', '@semantic-release/git']
           # semantic-release.yml
+          # semantic-release.yml
           plugins:
-            - '@semantic-release/commit-analyzer'
+            - '@semantic-release/commit-analyzer':
+                releaseRules:
+                  - type: build
+                    release: patch
+                  - type: ci
+                    release: patch
+                  - type: chore
+                    release: patch
+                  - type: docs
+                    release: patch
+                  - type: feat
+                    release: minor
+                  - type: fix
+                    release: patch
+                  - type: perf
+                    release: minor
+                  - type: refactor
+                    release: patch
+                  - type: revert
+                    release: patch
+                  - type: style
+                    release: patch
+                  - type: test
+                    release: patch
+                parserOpts:
+                  noteKeywords: [BREAKING CHANGE, BREAKING CHANGES, BREAKING]
+                  headerPattern: '^\\[(?<folder>[^\\]]+)\\]\\s(?<type>\\w+)(?:\\((?<scope>.*)\\))?(!)?(?:\\s+(?<subject>.*))?\\n?(?<body>(?:.*\\n?)*)'
+                  breakingHeaderPattern: '^\\[(?<folder>[^\\]]+)\\]\\sBREAKING\\s(?:\\((?<scope>.*)\\))?\\s(?<subject>.*)$'
+                  headerCorrespondence: ['type', 'scope', 'subject', 'folder']
             - '@semantic-release/release-notes-generator':
                 preset: 'conventionalcommits'
                 generateNotes: |
@@ -90,6 +119,7 @@ jobs:
                 tagPrefix: 'app2-v'
             - '@semantic-release/github'
             - '@semantic-release/git'
+
           # specify default branches to add support for the `main` branch
           # which semantic-release doesn't have as a default yet.
           branches: |
