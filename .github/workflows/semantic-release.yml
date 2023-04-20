@@ -55,14 +55,27 @@ jobs:
               [
                 '@semantic-release/release-notes-generator',
                 {
-                  tagFormat: '${{ steps.update_tag_format.outputs.tag_format }}'
-                }
+                  tagFormat: '${nextRelease.version}',
+                  preset: 'conventionalcommits',
+                  writerOpts: {
+                    commitsSort: ['subject', 'scope'],
+                  },
+                },
               ],
-              [      '@semantic-release/changelog',      {        changelogTitle: '# CHANGELOG',        tagFormat: '${{ steps.update_tag_format.outputs.tag_format }}'      }    ],
-              '@semantic-release/github',
-              '@semantic-release/git'
+              [      '@semantic-release/changelog',      {        changelogTitle: '# CHANGELOG'},    ],
+              '@semantic-release/git',
+              [
+                '@semantic-release/github',
+                {
+                  assets: [
+                    {
+                      path: 'applications/**/dist/*.tgz',
+                      label: 'Application Package',
+                    },
+                  ],
+                },
+              ],
             ]
-
           # specify default branches to add support for the `main` branch
           # which semantic-release doesn't have as a default yet.
           branches: |
