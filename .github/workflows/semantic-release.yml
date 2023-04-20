@@ -31,13 +31,14 @@ jobs:
         id: update_tag_format
         run: |
           APP_NAME=$(echo "${{ steps.changed_dirs.outputs.dirs }}" | awk '{print tolower($0)}')
-          echo "::set-output name=tag_format::${APP_NAME}-v\${version}"
+          VERSION=$(cat applications/${APP_NAME}/VERSION)
+          echo "::set-output name=tag_format::${APP_NAME}-v${VERSION}"
 
       - name: Add new version to changelog
         id: add_version_to_changelog
         run: |
           version=$(git describe --tags --abbrev=0)
-          sed -i "s/\[[0-9]\+\.[0-9]\+\.[0-9]\+\]/${version} $(date +'%Y-%m-%d')/" CHANGELOG.md        
+          sed -i "s/\[[0-9]\+\.[0-9]\+\.[0-9]\+\]/[${version}] $(date +'%Y-%m-%d')/" CHANGELOG.md        
         continue-on-error: true 
 
       # https://github.com/marketplace/actions/semantic-release-action#usage
@@ -45,13 +46,13 @@ jobs:
         uses: docker://ghcr.io/codfish/semantic-release-action:v2
         id: semantic
         env:
-          GITHUB_TOKEN: ${{ secrets.PAT_GITHUB }}
+          GITHUB_TOKEN: ${{ secrets.PAT_GITHUB2 }}
         with:
           tag_format: '${{ steps.update_tag_format.outputs.tag_format }}'
           additional_packages: |
             ['@semantic-release/changelog', '@semantic-release/git']
           plugins: |
-            ['@semantic-release/commit-analyzer', '@semantic-release/release-notes-generator', ['@semantic-release/changelog', {changelogTitle: '# CHANGELOG', tagPrefix : 'app1-v'}], '@semantic-release/github', '@semantic-release/git']
+            ['@semantic-release/commit-analyzer', '@semantic-release/release-notes-generator', ['@semantic-release/changelog', {changelogTitle: '# CHANGELOG'}], '@semantic-release/github', '@semantic-release/git']
           # specify default branches to add support for the `main` branch
           # which semantic-release doesn't have as a default yet.
           branches: |
@@ -73,85 +74,3 @@ jobs:
           echo "${{ toJson(steps.semantic.outputs) }}" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
         continue-on-error: true
-
-
-
-# name: Semantic Release for Apps
-
-# on:
-#   push:
-#     branches:
-#       - master
-#     paths:
-#       - 'applications/**'
-
-# permissions: write-all
-
-# jobs:
-#   release:
-#     name: Semantic Release
-#     runs-on: ubuntu-latest
-#     steps:
-#       - name: Checkout
-#         uses: actions/checkout@v2
-#         id: checkout
-#         with:
-#           fetch-depth: 0
-
-#       # Get the name of the directory that was changed
-#       - name: Get changed directories
-#         id: changed_dirs
-#         run: |
-#           echo "::set-output name=dirs::$(git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | awk -F/ '{print $2}' | sort -u)"
-
-#       # Update the version number in the changelog file
-#       - name: Update changelog
-#         id: update_changelog
-#         run: |
-#           app_name="${{ steps.changed_dirs.outputs.dirs }}"
-#           version="${{ steps.semantic.outputs.next-version }}"
-#           sed -i "1s/.*/# CHANGELOG ${app_name}-${version}/" ../CHANGELOG.md
-
-#       # Update the tag format to include the name of the directory
-#       - name: Update tag format
-#         id: update_tag_format
-#         run: |
-#           echo "::set-output name=tag_format::${{ steps.changed_dirs.outputs.dirs }}-v\${version}"
-
-#       # https://github.com/marketplace/actions/semantic-release-action#usage
-#       - name: Semantic Release
-#         uses: docker://ghcr.io/codfish/semantic-release-action:v2
-#         id: semantic
-#         env:
-#           GITHUB_TOKEN: ${{ secrets.PAT_GITHUB }}
-#         with:
-#           tag_format: '${{ steps.update_tag_format.outputs.tag_format }}'
-#           additional_packages: |
-#             ['@semantic-release/changelog', '@semantic-release/git']
-#           plugins: |
-#             ['@semantic-release/commit-analyzer', '@semantic-release/release-notes-generator', ['@semantic-release/changelog', {changelogTitle: '# CHANGELOG'}], '@semantic-release/github', '@semantic-release/git']
-#           # specify default branches to add support for the `main` branch
-#           # which semantic-release doesn't have as a default yet.
-#           branches: |
-#             [
-#               'master'
-#             ]
-
-#       - name: Update CHANGELOG.md
-#         id: update_changelog
-#         run: |
-#           folder_name=$(echo "${{ steps.changed_dirs.outputs.dirs }}" | awk '{print tolower($0)}')
-#           version=$(echo "${{ steps.semantic.outputs.release-version }}" | sed 's/^v//')
-#           date=$(date +%Y-%m-%d)
-#           changelog_entry="## [$version](https://github.com/thejaswitricon/dockertest/compare/${folder_name}-v$version...${folder_name}-v$version) ($date)"
-#           sed -i "/# CHANGELOG/a $changelog_entry" CHANGELOG.md
-#         continue-on-error: true
-
-#       - name: Semantic Release Output Summary
-#         id: semantic_summary
-#         run: |
-#           echo "### Semantic Version = ${{ steps.semantic.outputs.release-version }}\`" >> $GITHUB_STEP_SUMMARY
-#           echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
-#           echo "${{ toJson(steps.semantic.outputs) }}" >> $GITHUB_STEP_SUMMARY
-#           echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
-#         continue-on-error: true
