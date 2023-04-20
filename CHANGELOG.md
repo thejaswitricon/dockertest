@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## [2.10.1](https://github.com/thejaswitricon/dockertest/compare/v2.10.0...v2.10.1) (2023-04-20)
+
+
+### Bug Fixes
+
+* app2 ([001d416](https://github.com/thejaswitricon/dockertest/commit/001d4160fe0d97ea8897a4ed7c8bb7a1c6f573ab))
+
 # [2.10.0](https://github.com/thejaswitricon/dockertest/compare/v2.9.0...v2.10.0) (2023-04-20)
 
 
