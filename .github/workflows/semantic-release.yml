@@ -40,18 +40,6 @@ jobs:
           sed -i "s/\[[0-9]\+\.[0-9]\+\.[0-9]\+\]/[${version}] $(date +'%Y-%m-%d')/" CHANGELOG.md        
         continue-on-error: true 
 
-        # Generate release notes
-      - name: Generate Release Notes
-        id: release_notes
-        uses: actions/github-script@v4
-        env:
-          GITHUB_TOKEN: ${{ secrets.PAT_GITHUB }}
-        with:
-          script: |
-            const { data: { body } } = await octokit.repos.getLatestRelease({owner: context.repo.owner, repo: context.repo.repo})
-            const releaseNotes = body + `\n\nRelease version: \${{ steps.semantic.outputs.release-version }}`
-            await octokit.repos.updateRelease({owner: context.repo.owner, repo: context.repo.repo, release_id: context.payload.release.id, body: releaseNotes})
-
       # https://github.com/marketplace/actions/semantic-release-action#usage
       - name: Semantic Release
         uses: docker://ghcr.io/codfish/semantic-release-action:v2
@@ -63,7 +51,7 @@ jobs:
           additional_packages: |
             ['@semantic-release/changelog', '@semantic-release/git']
           plugins: |
-            ['@semantic-release/commit-analyzer', ['@semantic-release/changelog', {changelogTitle: '# CHANGELOG', tagPrefix : 'app1-v'}], '@semantic-release/github', '@semantic-release/git']
+            ['@semantic-release/commit-analyzer', ['@semantic-release/release-notes-generator', {"preset": "conventionalcommits","templateFile": "template.hbs","issuePrefixes": ["#"]}] ['@semantic-release/changelog', {changelogTitle: '# CHANGELOG', tagPrefix : 'app1-v'}], '@semantic-release/github', '@semantic-release/git']
           # specify default branches to add support for the `main` branch
           # which semantic-release doesn't have as a default yet.
           branches: |
