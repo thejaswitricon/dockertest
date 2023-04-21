@@ -33,12 +33,12 @@ jobs:
           APP_NAME=$(echo "${{ steps.changed_dirs.outputs.dirs }}" | awk '{print tolower($0)}')
           echo "::set-output name=tag_format::${APP_NAME}-v\${version}"
 
-      # - name: Add new version to changelog
-      #   id: add_version_to_changelog
-      #   run: |
-      #     version=$(git describe --tags --abbrev=0)
-      #     sed -i "s/\[[0-9]\+\.[0-9]\+\.[0-9]\+\]/[${version}] $(date +'%Y-%m-%d')/" CHANGELOG.md        
-      #   continue-on-error: true 
+      - name: Add new version to changelog
+        id: add_version_to_changelog
+        run: |
+          version=$(git describe --tags --abbrev=0)
+          sed -i "s/\[[0-9]\+\.[0-9]\+\.[0-9]\+\]/[${version}] $(date +'%Y-%m-%d')/" CHANGELOG.md        
+        continue-on-error: true 
 
       # https://github.com/marketplace/actions/semantic-release-action#usage
       - name: Semantic Release
@@ -50,32 +50,7 @@ jobs:
           additional_packages: |
             ['@semantic-release/changelog', '@semantic-release/git']
           plugins: |
-            [
-              '@semantic-release/commit-analyzer',
-              [
-                '@semantic-release/release-notes-generator',
-                {
-                  tagFormat: '${nextRelease.version}',
-                  preset: 'conventionalcommits',
-                  writerOpts: {
-                    commitsSort: ['subject', 'scope'],
-                  },
-                },
-              ],
-              [      '@semantic-release/changelog',      {        changelogTitle: '# CHANGELOG'},    ],
-              '@semantic-release/git',
-              [
-                '@semantic-release/github',
-                {
-                  assets: [
-                    {
-                      path: 'applications/**/dist/*.tgz',
-                      label: 'Application Package',
-                    },
-                  ],
-                },
-              ],
-            ]
+            ['@semantic-release/commit-analyzer','@semantic-release/release-notes-generator', ['@semantic-release/changelog', {preset: 'conventionalcommits', changelogTitle: '## Version ${nextRelease.version}', tagPrefix : 'app1-v'}], '@semantic-release/github', '@semantic-release/git']
           # specify default branches to add support for the `main` branch
           # which semantic-release doesn't have as a default yet.
           branches: |
