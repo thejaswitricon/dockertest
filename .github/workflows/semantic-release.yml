@@ -59,10 +59,9 @@ jobs:
                 "preset": "angular",
                 "parserOpts": {
                   "noteKeywords": ["BREAKING CHANGE", "BREAKING CHANGES"]
-                },
-                "template": "{{ version }}\n\n{{#if breaking}}BREAKING CHANGES\n{{#each breaking}}{{{this}}}\n{{/each}}{{/if}}\n\n{{#if notes}}Other Changes\n{{#each notes}}{{{this}}}\n{{/each}}{{/if}}"
+                }
               }],
-              ['@semantic-release/changelog', { "changelogTitle": "# CHANGELOG" }],
+              [      '@semantic-release/changelog',       {         "changelogTitle": "# CHANGELOG",        "writeOpts": {          "header": "# My Custom Header\n"        }      }    ],
               '@semantic-release/github',
               '@semantic-release/git'
             ]
