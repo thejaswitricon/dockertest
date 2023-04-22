@@ -1,6 +1,13 @@
 # CHANGELOG
 
-# [1.5.0](https://github.com/thejaswitricon/dockertest/compare/app2-1.4.19...app2-1.5.0) (2023-04-22)
+# [1.6.0](https://github.com/thejaswitricon/dockertest/compare/app2-1.5.0...app2-1.6.0) (2023-04-22)
+
+
+### Features
+
+* app2 ([50d19b5](https://github.com/thejaswitricon/dockertest/commit/50d19b56ded9c4ed4fc6d9a572bf89b3058072ee))
+
+# [-vapp2-1.5.0] 2023-04-22(https://github.com/thejaswitricon/dockertest/compare/app2-1.4.19...app2-1.5.0) (2023-04-22)
 
 
 ### Bug Fixes
