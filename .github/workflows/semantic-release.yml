@@ -50,8 +50,22 @@ jobs:
           tag_format: '${{ steps.update_tag_format.outputs.tag_format }}'
           additional_packages: |
             ['@semantic-release/changelog', '@semantic-release/git']
-          plugins: |
-            ['@semantic-release/commit-analyzer', ['@semantic-release/release-notes-generator', {preset: 'angular', parserOpts: {noteKeywords: ['BREAKING CHANGE', 'BREAKING CHANGES']}}, '@semantic-release/changelog', {changelogTitle: '# CHANGELOG'}], '@semantic-release/github', '@semantic-release/git']
+          plugins:
+            - '@semantic-release/commit-analyzer'
+            - [
+                '@semantic-release/release-notes-generator',
+                {
+                  'preset': 'conventionalcommits',
+                  'writerOpts': {
+                    'headerPartial': '{{version}} ({{date}})',
+                    'transform': (notes, context) => {
+                      return `## Changes\n\n${notes}`
+                    }
+                  }
+                }
+              ]
+            - '@semantic-release/github'
+            - '@semantic-release/git'
           # specify default branches to add support for the `main` branch
           # which semantic-release doesn't have as a default yet.
           branches: |
