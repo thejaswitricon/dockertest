@@ -25,15 +25,20 @@ jobs:
       - name: Get changed directories
         id: changed_dirs
         run: |
-          echo "::set-output name=dirs::$(git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | awk -F/ '{print $2}' | sort -u)"
+          echo "::set-output name=dirs::$(git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | awk -F/ '{print $2}' | sort -u | tr '\n' ',')"
 
       # Update the tag format to include the name of the directory
       - name: Update tag format
         id: update_tag_format
         run: |
-          APP_NAME=$(echo "${{ steps.changed_dirs.outputs.dirs }}" | awk '{print tolower($0)}')
-          echo "::set-output name=tag_format::${APP_NAME}-\${version}"
-
+          APP_NAMES=$(echo "${{ steps.changed_dirs.outputs.dirs }}" | awk '{print tolower($0)}')
+          TAG_FORMAT=""
+          IFS=',' read -ra DIRS <<< "$APP_NAMES"
+          for DIR in "${DIRS[@]}"; do
+            TAG_FORMAT="${TAG_FORMAT}${DIR}-v\${version}."
+          done
+          TAG_FORMAT=${TAG_FORMAT%?}
+          echo "::set-output name=tag_format::${TAG_FORMAT}"
 
       - name: Add new version to changelog
         id: add_version_to_changelog
@@ -53,23 +58,11 @@ jobs:
           additional_packages: |
             ['@semantic-release/changelog', '@semantic-release/git']
           plugins: |
-            [
-              '@semantic-release/commit-analyzer',
-              ['@semantic-release/release-notes-generator', {
-                "preset": "angular",
-                "parserOpts": {
-                  "noteKeywords": ["BREAKING CHANGE", "BREAKING CHANGES"]
-                }
-              }],
-              [      '@semantic-release/changelog',       {         "changelogTitle": "# CHANGELOG",        "writeOpts": {          "header": "# My Custom Header\n"        }      }    ],
-              '@semantic-release/github',
-              '@semantic-release/git'
-            ]
+            ['@semantic-release/commit-analyzer', '@semantic-release/release-notes-generator', ['@semantic-release/changelog', {changelogTitle: '# CHANGELOG'}], '@semantic-release/github', '@semantic-release/git']
           branches: |
-            ['master']
-
-
-
+            [
+              'master'
+            ]
       - name: Semantic Release Output Summary
         id: semantic_summary
         run: |
