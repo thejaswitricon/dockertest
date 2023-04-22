@@ -50,21 +50,12 @@ jobs:
         with:
           additional_packages: |
             ['@semantic-release/changelog', '@semantic-release/git']
-          plugins: |
-            ['@semantic-release/commit-analyzer',
-            ['@semantic-release/release-notes-generator',
-              {preset: 'angular',
-              releaseRules: [{type: 'docs', scope: 'README', release: 'patch'},
-                              {type: 'refactor', scope: 'app1', release: 'minor'},
-                              {type: 'refactor', scope: 'app2', release: 'minor'},
-                              {type: 'feat', release: 'minor'},
-                              {type: 'fix', release: 'patch'}]
-              }
-            ],
-            ['@semantic-release/changelog', {changelogTitle: '# CHANGELOG'}],
-            '@semantic-release/github',
-            ['@semantic-release/git', {assets: ['CHANGELOG.md'], message: 'chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}'}]
-            ],
+          plugins:
+            - '@semantic-release/commit-analyzer'
+            - ['@semantic-release/release-notes-generator', {preset: 'angular', releaseRules: [{type: 'docs', scope: 'README', release: 'patch'}, {type: 'refactor', scope: 'app1', release: 'minor'}, {type: 'refactor', scope: 'app2', release: 'minor'}, {type: 'feat', release: 'minor'}, {type: 'fix', release: 'patch'}]}]
+            - ['@semantic-release/changelog', {changelogTitle: '# CHANGELOG'}]
+            - '@semantic-release/github'
+            - '@semantic-release/git'
           tagFormat: '${{ steps.update_tag_format.outputs.tag_format }}'
 
           # specify default branches to add support for the `main` branch
