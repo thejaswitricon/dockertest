@@ -25,20 +25,15 @@ jobs:
       - name: Get changed directories
         id: changed_dirs
         run: |
-          echo "::set-output name=dirs::$(git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | awk -F/ '{print $2}' | sort -u | tr '\n' ',')"
+          echo "::set-output name=dirs::$(git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | awk -F/ '{print $2}' | sort -u)"
 
       # Update the tag format to include the name of the directory
       - name: Update tag format
         id: update_tag_format
         run: |
-          APP_NAMES=$(echo "${{ steps.changed_dirs.outputs.dirs }}" | awk '{print tolower($0)}')
-          TAG_FORMAT=""
-          IFS=',' read -ra DIRS <<< "$APP_NAMES"
-          for DIR in "${DIRS[@]}"; do
-            TAG_FORMAT="${TAG_FORMAT}${DIR}-v\${version}."
-          done
-          TAG_FORMAT=${TAG_FORMAT%?}
-          echo "::set-output name=tag_format::${TAG_FORMAT}"
+          APP_NAME=$(echo "${{ steps.changed_dirs.outputs.dirs }}" | awk '{print tolower($0)}')
+          echo "::set-output name=tag_format::${APP_NAME}-\${version}"
+
 
       - name: Add new version to changelog
         id: add_version_to_changelog
