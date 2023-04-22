@@ -58,8 +58,6 @@ jobs:
             [
               'master'
             ]
-
-
       # # Get the latest version tag
       # - name: Get latest version tag
       #   run: |
