@@ -51,7 +51,7 @@ jobs:
           additional_packages: |
             ['@semantic-release/changelog', '@semantic-release/git']
           plugins: |
-            ['@semantic-release/commit-analyzer', ['@semantic-release/release-notes-generator', {preset: 'angular', writerOpts: {headerPartial: '# Changelog\n\n'}, '@semantic-release/changelog', {changelogTitle: '# CHANGELOG'}], '@semantic-release/github', '@semantic-release/git']
+            ['@semantic-release/commit-analyzer', '@semantic-release/release-notes-generator', '@semantic-release/changelog', {changelogTitle: '# CHANGELOG'}], '@semantic-release/github', '@semantic-release/git']
           # specify default branches to add support for the `main` branch
           # which semantic-release doesn't have as a default yet.
           branches: |
