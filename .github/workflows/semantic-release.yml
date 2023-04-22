@@ -32,15 +32,14 @@ jobs:
         id: update_tag_format
         run: |
           APP_NAME=$(echo "${{ steps.changed_dirs.outputs.dirs }}" | awk '{print tolower($0)}')
-          echo "::set-output name=tag_format::${APP_NAME}-\${version}"
+          echo "::set-output name=tag_format::${APP_NAME}-v\${version}"
 
-
-      - name: Add new version to changelog
-        id: add_version_to_changelog
-        run: |
-          version=$(git describe --tags --abbrev=0)
-          sed -i "s/\[[0-9]\+\.[0-9]\+\.[0-9]\+\]/[${APP_NAME}-v${version}] $(date +'%Y-%m-%d')/" CHANGELOG.md
-        continue-on-error: true 
+      # - name: Add new version to changelog
+      #   id: add_version_to_changelog
+      #   run: |
+      #     version=$(git describe --tags --abbrev=0)
+      #     sed -i "s/\[[0-9]\+\.[0-9]\+\.[0-9]\+\]/[${APP_NAME}-v${version}] $(date +'%Y-%m-%d')/" CHANGELOG.md
+      #   continue-on-error: true 
 
       # https://github.com/marketplace/actions/semantic-release-action#usage
       - name: Semantic Release
@@ -49,11 +48,25 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.PAT_GITHUB2 }}
         with:
-          tag_format: '${{ steps.update_tag_format.outputs.tag_format }}'
           additional_packages: |
             ['@semantic-release/changelog', '@semantic-release/git']
           plugins: |
-            ['@semantic-release/commit-analyzer', '@semantic-release/release-notes-generator', ['@semantic-release/changelog', {changelogTitle: '# CHANGELOG'}], '@semantic-release/github', '@semantic-release/git']
+            ['@semantic-release/commit-analyzer',
+            ['@semantic-release/release-notes-generator',
+              {preset: 'angular',
+              releaseRules: [{type: 'docs', scope: 'README', release: 'patch'},
+                              {type: 'refactor', scope: 'app1', release: 'minor'},
+                              {type: 'refactor', scope: 'app2', release: 'minor'},
+                              {type: 'feat', release: 'minor'},
+                              {type: 'fix', release: 'patch'}]
+              }
+            ],
+            ['@semantic-release/changelog', {changelogTitle: '# CHANGELOG'}],
+            '@semantic-release/github',
+            ['@semantic-release/git', {assets: ['CHANGELOG.md'], message: 'chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}'}]
+            ],
+          tagFormat: '${{ steps.update_tag_format.outputs.tag_format }}'
+
           # specify default branches to add support for the `main` branch
           # which semantic-release doesn't have as a default yet.
           branches: |
