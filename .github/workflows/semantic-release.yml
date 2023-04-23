@@ -1,4 +1,3 @@
-
 name: Semantic Release for Apps
 
 on:
@@ -21,65 +20,47 @@ jobs:
         with:
           fetch-depth: 0
 
-      # Get the name of the directory that was changed
+      # Get the names of the directories that were changed
       - name: Get changed directories
         id: changed_dirs
         run: |
           echo "::set-output name=dirs::$(git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | awk -F/ '{print $2}' | sort -u | tr '\n' ',')"
 
-      # Update the tag format to include the name of the directory
-      - name: Update tag format
-        id: update_tag_format
-        run: |
-          APP_NAMES=$(echo "${{ steps.changed_dirs.outputs.dirs }}" | awk '{print tolower($0)}')
-          TAG_FORMAT=""
-          IFS=',' read -ra DIRS <<< "$APP_NAMES"
-          for DIR in "${DIRS[@]}"; do
-            TAG_FORMAT="${TAG_FORMAT}${DIR}-v\${version}."
-          done
-          TAG_FORMAT=${TAG_FORMAT%?}
-          echo "::set-output name=tag_format::${TAG_FORMAT}"
-
-      # Loop through each changed directory and update the version
-      # number according to the type of change made
-      - name: Update app versions
-        id: update_versions
+      # Split the directory names and loop through each one
+      - name: Loop over directories
+        id: loop_dirs
         run: |
           APP_NAMES=$(echo "${{ steps.changed_dirs.outputs.dirs }}" | awk '{print tolower($0)}')
           IFS=',' read -ra DIRS <<< "$APP_NAMES"
           for DIR in "${DIRS[@]}"; do
-            cd "applications/${DIR}"
-            if git diff --quiet HEAD~ HEAD package-lock.json; then
-              npm version patch --no-git-tag-version
-            else
-              npm version minor --no-git-tag-version
-            fi
-            cd -
+            echo "::set-output name=app_dir::$DIR"
+            echo "::set-output name=app_name::${DIR//_/ }"
+            echo "::set-output name=tag_format::${DIR//_/-}-v\${version}"
+            echo "::set-output name=app_path::applications/${DIR}"
+            echo "::set-output name=changelog_path::applications/${DIR}/CHANGELOG.md"
+            echo "::set-output name=version_cmd::cd applications/${DIR} && npm version minor --no-git-tag-version"
+            echo "::set-output name=prepare_cmd::cd applications/${DIR} && npm run build"
           done
 
       - name: Add new version to changelog
         id: add_version_to_changelog
         run: |
           version=$(git describe --tags --abbrev=0)
-          APP_NAMES=$(echo "${{ steps.changed_dirs.outputs.dirs }}" | awk '{print tolower($0)}')
-          IFS=',' read -ra DIRS <<< "$APP_NAMES"
-          for DIR in "${DIRS[@]}"; do
-            sed -i "s/\[[0-9]\+\.[0-9]\+\.[0-9]\+\]/[${DIR}-v${version}] $(date +'%Y-%m-%d')/" "applications/${DIR}/CHANGELOG.md"
-          done
+          sed -i "s/\[[0-9]\+\.[0-9]\+\.[0-9]\+\]/[${{ steps.loop_dirs.outputs.app_name }}-v${version}] $(date +'%Y-%m-%d')/" ${{ steps.loop_dirs.outputs.changelog_path }}
         continue-on-error: true 
 
-      # https://github.com/marketplace/actions/semantic-release-action#usage
+      # Run semantic release for each directory
       - name: Semantic Release
         uses: docker://ghcr.io/codfish/semantic-release-action:v2
         id: semantic
         env:
           GITHUB_TOKEN: ${{ secrets.PAT_GITHUB2 }}
         with:
-          tag_format: '${{ steps.update_tag_format.outputs.tag_format }}'
+          tag_format: '${{ steps.loop_dirs.outputs.tag_format }}'
           additional_packages: |
             ['@semantic-release/changelog', '@semantic-release/git', '@semantic-release/exec']
           plugins: |
-            ['@semantic-release/commit-analyzer', '@semantic-release/release-notes-generator', ['@semantic-release/changelog', {changelogTitle: '# CHANGELOG'}], '@semantic-release/github', '@semantic-release/git', ['@semantic-release/exec', { prepareCmd: 'cd applications/app2 && npm version minor --no-git-tag-version' }]]
+            ['@semantic-release/commit-analyzer', '@semantic-release/release-notes-generator', ['@semantic-release/changelog', {changelogTitle: '# CHANGELOG'}], '@semantic-release/github', '@semantic-release/git', ['@semantic-release/exec', { prepareCmd: '${{ steps.loop_dirs.outputs.version_cmd }}' }, { prepareCmd: '${{ steps.loop_dirs.outputs.prepare_cmd }}' }]]
           branches: |
             [
               'master'
