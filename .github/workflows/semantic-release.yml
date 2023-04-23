@@ -40,11 +40,32 @@ jobs:
           TAG_FORMAT=${TAG_FORMAT%?}
           echo "::set-output name=tag_format::${TAG_FORMAT}"
 
+      # Loop through each changed directory and update the version
+      # number according to the type of change made
+      - name: Update app versions
+        id: update_versions
+        run: |
+          APP_NAMES=$(echo "${{ steps.changed_dirs.outputs.dirs }}" | awk '{print tolower($0)}')
+          IFS=',' read -ra DIRS <<< "$APP_NAMES"
+          for DIR in "${DIRS[@]}"; do
+            cd "applications/${DIR}"
+            if git diff --quiet HEAD~ HEAD package-lock.json; then
+              npm version patch --no-git-tag-version
+            else
+              npm version minor --no-git-tag-version
+            fi
+            cd -
+          done
+
       - name: Add new version to changelog
         id: add_version_to_changelog
         run: |
           version=$(git describe --tags --abbrev=0)
-          sed -i "s/\[[0-9]\+\.[0-9]\+\.[0-9]\+\]/[${APP_NAME}-v${version}] $(date +'%Y-%m-%d')/" CHANGELOG.md
+          APP_NAMES=$(echo "${{ steps.changed_dirs.outputs.dirs }}" | awk '{print tolower($0)}')
+          IFS=',' read -ra DIRS <<< "$APP_NAMES"
+          for DIR in "${DIRS[@]}"; do
+            sed -i "s/\[[0-9]\+\.[0-9]\+\.[0-9]\+\]/[${DIR}-v${version}] $(date +'%Y-%m-%d')/" "applications/${DIR}/CHANGELOG.md"
+          done
         continue-on-error: true 
 
       # https://github.com/marketplace/actions/semantic-release-action#usage
