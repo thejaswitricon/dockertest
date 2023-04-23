@@ -56,9 +56,9 @@ jobs:
         with:
           tag_format: '${{ steps.update_tag_format.outputs.tag_format }}'
           additional_packages: |
-            ['@semantic-release/changelog', '@semantic-release/git']
+            ['@semantic-release/changelog', '@semantic-release/git', '@semantic-release/exec']
           plugins: |
-            ['@semantic-release/commit-analyzer', '@semantic-release/release-notes-generator', ['@semantic-release/changelog', {changelogTitle: '# CHANGELOG'}], '@semantic-release/github', '@semantic-release/git']
+            ['@semantic-release/commit-analyzer', '@semantic-release/release-notes-generator', ['@semantic-release/changelog', {changelogTitle: '# CHANGELOG'}], '@semantic-release/github', '@semantic-release/git', ['@semantic-release/exec', { prepareCmd: 'cd applications/app2 && npm version minor --no-git-tag-version' }]]
           branches: |
             [
               'master'
