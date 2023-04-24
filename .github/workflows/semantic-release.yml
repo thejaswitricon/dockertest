@@ -24,11 +24,11 @@ jobs:
           fetch-depth: 0
 
       # Update the tag format to include the name of the directory
-      - name: Update tag format
-        id: update_tag_format
-        run: |
-          APP_NAME=${{ matrix.app_name }}
-          echo "::set-output name=tag_format::${APP_NAME}-v\${version}"
+      # - name: Update tag format
+      #   id: update_tag_format
+      #   run: |
+      #     APP_NAME=${{ matrix.app_name }}
+      #     echo "::set-output name=tag_format::${APP_NAME}-v\${version}"
 
       # - name: Update tag format
       #   id: update_tag_format
