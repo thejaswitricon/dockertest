@@ -1,5 +1,46 @@
 # CHANGELOG
 
+# [2.11.0](https://github.com/thejaswitricon/dockertest/compare/v2.10.3...v2.11.0) (2023-04-24)
+
+
+### Bug Fixes
+
+* app2 ([b0b5522](https://github.com/thejaswitricon/dockertest/commit/b0b552255d382897b73eb8e344c3eb4e3394b516))
+* app2 ([0d1873b](https://github.com/thejaswitricon/dockertest/commit/0d1873b804fd80d3400f7111d11fe58050885c1c))
+* app2 ([8220faa](https://github.com/thejaswitricon/dockertest/commit/8220faa6c4de3c7c12e3d4a67bdf554a505343b3))
+* app2 ([a8b0290](https://github.com/thejaswitricon/dockertest/commit/a8b0290ccaa30ba406d18cfb4a3853ead48086cb))
+* app2 ([c58075e](https://github.com/thejaswitricon/dockertest/commit/c58075e22378a19429d2933749f0a3be636d3a4d))
+* app2 ([e66e4d3](https://github.com/thejaswitricon/dockertest/commit/e66e4d35869656747c0859a1fde2e2486b7b99f7))
+* app2 ([1609d12](https://github.com/thejaswitricon/dockertest/commit/1609d1239a9c09068358e96494c05785d991600b))
+* app2 ([6e92446](https://github.com/thejaswitricon/dockertest/commit/6e924463d679d37212d71c66b6b2e088dde5eacf))
+* app2 ([cc2af52](https://github.com/thejaswitricon/dockertest/commit/cc2af525266d0f8d598bb3213f39514d7d00b6e4))
+* app2 ([cdb5a1e](https://github.com/thejaswitricon/dockertest/commit/cdb5a1e3a9eff5241bd2b510f4859417fc8184e4))
+* app2 ([ef866d3](https://github.com/thejaswitricon/dockertest/commit/ef866d39768ddb9ed699daff180527173b2e6dd2))
+* app2 ([c64d16c](https://github.com/thejaswitricon/dockertest/commit/c64d16c13c91f88edafd55f5cb44c5b2bc5de805))
+
+
+### Features
+
+* app2 ([bdfee64](https://github.com/thejaswitricon/dockertest/commit/bdfee64c0bb21dacc6ad09b89894a9768756e57a))
+* app2 ([fb1365b](https://github.com/thejaswitricon/dockertest/commit/fb1365b4760f5f397282c95df42aa328d340435e))
+* app2 ([13aad91](https://github.com/thejaswitricon/dockertest/commit/13aad91a4897fd3177888080af639f93e8aef842))
+* app2 ([481bae9](https://github.com/thejaswitricon/dockertest/commit/481bae999fb6606f70dc718340123b177517bfc3))
+* app2 ([5b613e2](https://github.com/thejaswitricon/dockertest/commit/5b613e296b9f666b0433c58713468496499aa17c))
+* app2 ([50d19b5](https://github.com/thejaswitricon/dockertest/commit/50d19b56ded9c4ed4fc6d9a572bf89b3058072ee))
+* app2 ([2e80565](https://github.com/thejaswitricon/dockertest/commit/2e8056578fe47313c6600fe70767d7e79c2ceee8))
+* app2 and app1 ([ce63ccb](https://github.com/thejaswitricon/dockertest/commit/ce63ccb49c5330d7e213d97ac41af3d00ee7d211))
+* app2 and app1 ([e234d11](https://github.com/thejaswitricon/dockertest/commit/e234d11f0b2e9feb2eb4c714a1dcb2ec012868d8))
+* app2 and app1 ([0ba8f04](https://github.com/thejaswitricon/dockertest/commit/0ba8f0412e2343724171f5c8502e8d63a564fb0f))
+* app2 and app1 ([e305ca0](https://github.com/thejaswitricon/dockertest/commit/e305ca056a48a004f2a51ab86b55a49e90d5cb02))
+* app2 and app1 ([bbd8080](https://github.com/thejaswitricon/dockertest/commit/bbd808074bdff32439338bb391423cbc0f51d74b))
+* app2 and app1 ([d331464](https://github.com/thejaswitricon/dockertest/commit/d33146451f4b4e4917b8475ab0f204d252278e9c))
+* app2 and app1 ([3dd32d8](https://github.com/thejaswitricon/dockertest/commit/3dd32d828fc755fccd6b92e266ebe7f9b8eb8e72))
+* app2 and app1 ([31cfaad](https://github.com/thejaswitricon/dockertest/commit/31cfaadcf6ecf467f7c0d5dcd4167e294854e915))
+* app2 and app1 ([8963f31](https://github.com/thejaswitricon/dockertest/commit/8963f31a939ed58050ae262ebbd82ba69c2a9fec))
+* app2 and app1 ([1626608](https://github.com/thejaswitricon/dockertest/commit/16266085700fcd5a842f949d6bbf319861cb050a))
+* app2 and app1 ([1d31559](https://github.com/thejaswitricon/dockertest/commit/1d31559a809255cc73d7e7e3c30339ae8d7bd953))
+* app2 and app1 ([d6db684](https://github.com/thejaswitricon/dockertest/commit/d6db684bfa28e2d980fbf804cf35abc3435da502))
+
 # 1.0.0 (2023-04-24)
 
 
