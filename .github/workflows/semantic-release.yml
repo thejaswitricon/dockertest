@@ -1,3 +1,4 @@
+
 name: Semantic Release for Apps
 
 on:
@@ -13,9 +14,6 @@ jobs:
   release:
     name: Semantic Release
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        app_name: [app1, app2] # Replace with your app names
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -23,30 +21,34 @@ jobs:
         with:
           fetch-depth: 0
 
-      # Update the tag format to include the name of the directory
-      # - name: Update tag format
-      #   id: update_tag_format
-      #   run: |
-      #     APP_NAME=${{ matrix.app_name }}
-      #     echo "::set-output name=tag_format::${APP_NAME}-v\${version}"
-
-      # - name: Update tag format
-      #   id: update_tag_format
-      #   run: |
-      #     APP_NAME=$(echo "${{ steps.changed_dirs.outputs.dirs }}" | awk '{print tolower($0)}')
-      #     echo "::set-output name=tag_format::${APP_NAME}-v\${version}"
-
-      # Get the latest version tag
-      - name: Get latest version tag
-        id: get_latest_tag
+      # Get the name of the directory that was changed
+      - name: Get changed directories
+        id: changed_dirs
         run: |
-          echo "::set-env name=VERSION::$(git describe --tags --abbrev=0)"
+          echo "::set-output name=dirs::$(git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | awk -F/ '{print $2}' | sort -u)"
+        run: echo ${{ steps.changed_dirs.outputs.dirs }}
 
-      # Add new version to changelog
+      # Store the output of the `Get changed directories` step as a matrix
+      - name: Set up matrix
+        id: matrix
+        run: |
+          DIRS="${{ steps.changed_dirs.outputs.dirs }}"
+          IFS=$'\n' read -rd '' -a DIR_ARRAY <<<"$DIRS"
+          MATRIX=$(echo "${DIR_ARRAY[@]}" | sed 's/ /,/g')
+          echo "::set-output name=matrix::$MATRIX"
+
+      # Update the tag format to include the name of the directory
+      - name: Update tag format
+        id: update_tag_format
+        run: |
+          APP_NAME=$(echo "${{ steps.changed_dirs.outputs.dirs }}" | awk '{print tolower($0)}')
+          echo "::set-output name=tag_format::${APP_NAME}-v\${version}"
+
       - name: Add new version to changelog
         id: add_version_to_changelog
         run: |
-          sed -i "s/\[[0-9]\+\.[0-9]\+\.[0-9]\+\]/[$VERSION] $(date +'%Y-%m-%d')/" CHANGELOG.md        
+          version=$(git describe --tags --abbrev=0)
+          sed -i "s/\[[0-9]\+\.[0-9]\+\.[0-9]\+\]/[${version}] $(date +'%Y-%m-%d')/" CHANGELOG.md        
         continue-on-error: true 
 
       # https://github.com/marketplace/actions/semantic-release-action#usage
@@ -68,17 +70,20 @@ jobs:
               'master'
             ]
 
-      # Output the semantic release summary for each directory
+      # # Get the latest version tag
+      # - name: Get latest version tag
+      #   run: |
+      #     version=$(git describe --tags --abbrev=0)
+      #     echo "::set-output name=version::$version"
+
       - name: Semantic Release Output Summary
         id: semantic_summary
         run: |
-          echo "### Semantic Version for ${{ matrix.app_name }} = ${{ steps.semantic.outputs.release-version }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "### Semantic Version = ${{ steps.semantic.outputs.release-version }}\`" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
           echo "${{ toJson(steps.semantic.outputs) }}" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
         continue-on-error: true
-
-
 
 # name: Semantic Release for Apps
 
