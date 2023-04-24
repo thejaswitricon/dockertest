@@ -25,19 +25,24 @@ jobs:
       - name: Get changed directories
         id: changed_dirs
         run: |
-          echo "::set-output name=dirs::$(git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | awk -F/ '{print $2}' | sort -u)"
+          dirs=$(git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | awk -F/ '{print $1}' | sort -u)
+          echo "::set-output name=dirs::$dirs"
 
-      # Store the output of the `Get changed directories` step as a matrix
+      # Construct the matrix from the changed directories
       - name: Set up matrix
         id: matrix
         run: |
-          DIRS="${{ steps.changed_dirs.outputs.dirs }}"
-          IFS=$'\n' read -rd '' -a DIR_ARRAY <<<"$DIRS"
-          for dir in "${DIR_ARRAY[@]}"; do
+          dirs="${{ steps.changed_dirs.outputs.dirs }}"
+          IFS=$'\n' read -rd '' -a dir_array <<<"$dirs"
+          for dir in "${dir_array[@]}"; do
             matrix+=("{\"directory\": \"$dir\"}")
           done
-          MATRIX=$(echo "${matrix[@]}" | sed 's/ /,/g')
-          echo "::set-output name=matrix::[$MATRIX]"
+          echo "::set-output name=matrix::[$(echo "${matrix[@]}" | tr '\n' ',')]"
+
+      # Use the matrix in subsequent steps
+      - name: Print matrix
+        run: |
+          echo "Matrix: ${{ steps.matrix.outputs.matrix }}"
 
       # Update the tag format to include the name of the directory
       - name: Update tag format
