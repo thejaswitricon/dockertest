@@ -33,8 +33,11 @@ jobs:
         run: |
           DIRS="${{ steps.changed_dirs.outputs.dirs }}"
           IFS=$'\n' read -rd '' -a DIR_ARRAY <<<"$DIRS"
-          MATRIX=$(echo "${DIR_ARRAY[@]}" | sed 's/ /,/g')
-          echo "::set-output name=matrix::$MATRIX"
+          for dir in "${DIR_ARRAY[@]}"; do
+            matrix+=("{\"directory\": \"$dir\"}")
+          done
+          MATRIX=$(echo "${matrix[@]}" | sed 's/ /,/g')
+          echo "::set-output name=matrix::[$MATRIX]"
 
       # Update the tag format to include the name of the directory
       - name: Update tag format
