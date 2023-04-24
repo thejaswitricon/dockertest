@@ -1,52 +1,71 @@
 name: Semantic Release for Apps
-
 on:
   push:
-     branches:
+    branches:
       - master
     paths:
       - 'applications/**'
 
+
+
 permissions: write-all
+
+
 
 jobs:
   release:
     name: Semantic Release
     runs-on: ubuntu-latest
-
+    strategy:
+      matrix:
+        app_name: ['app1', 'app2']
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+        id: checkout
         with:
           fetch-depth: 0
-
-      # Get the list of directories that have changed
-      - name: Get changed directories
-        id: changed_dirs
+      - name: Update tag format
+        id: update_tag_format
         run: |
-          echo "::set-output name=dirs::$(git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | awk -F/ '{print $2}' | sort -u)"
-
-      # Loop over the directories and run the release steps for each
-      - name: Loop over directories
-        id: loop_over_dirs
+          APP_NAME=${{ matrix.app_name }}
+          echo "::set-output name=tag_format::${APP_NAME}-v\${{ steps.version.outputs.version }}"
+      - name: Get version
+        id: get_version
         run: |
-          for APP_NAME in ${{ steps.changed_dirs.outputs.dirs }}; do
-            echo "::set-output name=dir::$APP_NAME"
-            echo "Running release steps for $APP_NAME"
-        # Set the tag format to include the name of the directory
-            echo "::set-env name=TAG_FORMAT::$APP_NAME-v\${{ steps.semantic.outputs.version }}"
-        # Update the changelog for the directory
-            sed -i "s/\[[0-9]\+\.[0-9]\+\.[0-9]\+\]/[\${{ steps.semantic.outputs.version }}] $(date +'%Y-%m-%d')/" applications/$APP_NAME/CHANGELOG.md
-        # Run semantic release for the directory
-            docker run --rm \
-              -e GITHUB_TOKEN="${{ secrets.PAT_GITHUB2 }}" \
-              -e TAG_FORMAT="${{ env.TAG_FORMAT }}" \
-              -e ADDITIONAL_PACKAGES='["@semantic-release/changelog", "@semantic-release/git"]' \
-              -e PLUGINS='["@semantic-release/commit-analyzer", "@semantic-release/release-notes-generator", ["@semantic-release/changelog", {changelogTitle: "# CHANGELOG"}], "@semantic-release/github", ["@semantic-release/git", {assets: ["CHANGELOG.md"], message: "chore(release): \${{ nextRelease.version }} [skip ci]\n\n\${{ nextRelease.notes }}\n\nSigned-off-by: Thejaswiiii <abc@gmail.com>"}]]' \
-              -e BRANCHES='["master"]' \
-              -v "$(pwd)":/app \
-              ghcr.io/codfish/semantic-release-action:v2
-          done
+          git config --global user.email "actions@github.com"
+          git config --global user.name "GitHub Actions"
+          git pull
+          git fetch --prune --unshallow --tags
+          git checkout "${{ github.sha }}"
+          version=$(npx -p semantic-release@17 -p @semantic-release/git -c 'echo {}' | npx -p semantic-release@17 -p @semantic-release/git -s)
+          echo "::set-output name=version::$version"
+        continue-on-error: true
+      - name: Add new version to changelog
+        id: add_version_to_changelog
+        run: |
+          version=${{ steps.get_version.outputs.version }}
+          sed -i "s/\[[0-9]\+\.[0-9]\+\.[0-9]\+\]/[${version}] $(date +'%Y-%m-%d')/" applications/${{ matrix.app_name }}/CHANGELOG.md
+        continue-on-error: true
+      - name: Semantic Release
+        uses: docker://ghcr.io/codfish/semantic-release-action:v2
+        id: semantic
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT_GITHUB2 }}
+        with:
+          tag_format: '${{ steps.update_tag_format.outputs.tag_format }}'
+          additional_packages: |
+            ['@semantic-release/changelog', '@semantic-release/git']
+          plugins: |
+            [              '@semantic-release/commit-analyzer',              '@semantic-release/release-notes-generator',              ['@semantic-release/changelog', {changelogTitle: '# CHANGELOG'}],
+              '@semantic-release/github',
+              ['@semantic-release/git', {                assets: ['applications/${{ matrix.app_name }}/CHANGELOG.md'],
+                message: 'chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}\n\nSigned-off-by: Thejaswiiii <abc@gmail.com>'
+              }]
+            ]
+          branches: |
+            [              'master'            ]
+        continue-on-error: true
       - name: Semantic Release Output Summary
         id: semantic_summary
         run: |
@@ -55,4 +74,3 @@ jobs:
           echo "${{ toJson(steps.semantic.outputs) }}" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
         continue-on-error: true
-
