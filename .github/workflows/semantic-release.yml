@@ -21,29 +21,20 @@ jobs:
         with:
           fetch-depth: 0
 
-      # Get the name of the directory that was changed
       - name: Get changed directories
         id: changed_dirs
         run: |
-          dirs=$(git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | awk -F/ '{print $1}' | sort -u)
-          echo "::set-output name=dirs::$dirs"
-
-      # Construct the matrix from the changed directories
-      - name: Set up matrix
-        id: matrix
-        run: |
-          dirs="${{ steps.changed_dirs.outputs.dirs }}"
-          IFS=$'\n' read -rd '' -a dir_array <<<"$dirs"
-          for dir in "${dir_array[@]}"; do
-            matrix+=("{\"directory\": \"$dir\"}")
+          dirs=$(git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | awk -F/ '{print $2}' | sort -u)
+          dirs_arr=(${dirs//$'\n'/ })
+          dirs_matrix=""
+          for dir in "${dirs_arr[@]}"; do
+            if [[ "$dir" == "applications/"* ]]; then
+              app_name=$(echo "${dir/applications\//}" | awk '{print tolower($0)}')
+              dirs_matrix="${dirs_matrix}\n  - app_name: ${app_name}"
+            fi
           done
-          echo "::set-output name=matrix::[$(echo "${matrix[@]}" | tr '\n' ',')]"
-
-      # Use the matrix in subsequent steps
-      - name: Print matrix
-        run: |
-          echo "Matrix: ${{ steps.matrix.outputs.matrix }}"
-
+          echo "::set-output name=dirs_matrix::[$(echo -e "${dirs_matrix}" | sed '/^$/d' | sed ':a;N;$!ba;s/\n/, /g')]"
+          
       # Update the tag format to include the name of the directory
       - name: Update tag format
         id: update_tag_format
