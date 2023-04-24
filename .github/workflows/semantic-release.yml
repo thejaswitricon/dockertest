@@ -26,7 +26,6 @@ jobs:
         id: changed_dirs
         run: |
           echo "::set-output name=dirs::$(git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | awk -F/ '{print $2}' | sort -u)"
-        run: echo ${{ steps.changed_dirs.outputs.dirs }}
 
       # Store the output of the `Get changed directories` step as a matrix
       - name: Set up matrix
