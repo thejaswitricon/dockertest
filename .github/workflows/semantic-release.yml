@@ -1,4 +1,3 @@
-
 name: Semantic Release for Apps
 
 on:
@@ -21,31 +20,39 @@ jobs:
         with:
           fetch-depth: 0
 
+      # Get the name of the directory that was changed
       - name: Get changed directories
         id: changed_dirs
         run: |
-          dirs=$(git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | awk -F/ '{print $2}' | sort -u)
-          dirs_arr=(${dirs//$'\n'/ })
-          dirs_matrix=""
-          for dir in "${dirs_arr[@]}"; do
-            if [[ "$dir" == "applications/"* ]]; then
-              app_name=$(echo "${dir/applications\//}" | awk '{print tolower($0)}')
-              dirs_matrix="${dirs_matrix}\n  - app_name: ${app_name}"
-            fi
-          done
-          echo "::set-output name=dirs_matrix::[$(echo -e "${dirs_matrix}" | sed '/^$/d' | sed ':a;N;$!ba;s/\n/, /g')]"
+          echo "::set-output name=dirs::$(git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | awk -F/ '{print $2}' | sort -u)"
 
       # Update the tag format to include the name of the directory
       - name: Update tag format
         id: update_tag_format
         run: |
-          APP_NAMES=($(echo "${{ steps.changed_dirs.outputs.dirs }}" | awk '{print tolower($0)}' | sed 's/\n/ /g'))
-          TAG_FORMATS=""
-          for APP_NAME in "${APP_NAMES[@]}"; do
-            TAG_FORMATS="${TAG_FORMATS}\n${APP_NAME}-v${{ steps.version.outputs.version }}"
-          done
-          echo "::set-output name=tag_formats::$(echo -e "${TAG_FORMATS}" | sed '/^$/d' | sed ':a;N;$!ba;s/\n/, /g')"
+          APP_NAME=$(echo "${{ steps.changed_dirs.outputs.dirs }}" | awk '{print tolower($0)}')
+          echo "::set-output name=tag_format::${APP_NAME}-v\${version}"
 
+      # Include the name of the changed directory in the release notes
+      - name: Generate release notes
+        id: release_notes
+        uses: "semantic-release/release-notes-generator@v9"
+        with:
+          preset: "angular"
+          parserOpts: |
+            {
+              "headerPattern": "^\\[(?<type>[^\\]]*)\\] \\[(?<dir>[^\\]]*)\\] (?<subject>.*)$",
+              "headerCorrespondence": [
+                "type",
+                "dir",
+                "subject"
+              ]
+            }
+          writerOpts: |
+            {
+              "commitsSort": ["subject", "scope"]
+            }
+          tagPrefix: ""
 
       - name: Add new version to changelog
         id: add_version_to_changelog
@@ -73,20 +80,6 @@ jobs:
               'master'
             ]
 
-      # # Get the latest version tag
-      # - name: Get latest version tag
-      #   run: |
-      #     version=$(git describe --tags --abbrev=0)
-      #     echo "::set-output name=version::$version"
-
-      - name: Semantic Release Output Summary
-        id: semantic_summary
-        run: |
-          echo "### Semantic Version = ${{ steps.semantic.outputs.release-version }}\`" >> $GITHUB_STEP_SUMMARY
-          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
-          echo "${{ toJson(steps.semantic.outputs) }}" >> $GITHUB_STEP_SUMMARY
-          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
-        continue-on-error: true
 
 # name: Semantic Release for Apps
 
