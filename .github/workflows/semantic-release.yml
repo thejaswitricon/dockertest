@@ -33,20 +33,20 @@ jobs:
           for APP_NAME in ${{ steps.changed_dirs.outputs.dirs }}
           do
             echo "Processing $APP_NAME"
-            # Update the tag format to include the name of the directory
+        # Update the tag format to include the name of the directory
             TAG_FORMAT="${APP_NAME}-v\${version}"
             echo "Tag format: $TAG_FORMAT"
             echo "::set-output name=tag_format::$TAG_FORMAT"
-            # Add new version to changelog
+        # Add new version to changelog
             version=$(git describe --tags --abbrev=0)
-            sed -i "s/\[[0-9]\+\.[0-9]\+\.[0-9]\+\]/[${version}] $(date +'%Y-%m-%d')/" applications/${APP_NAME}/CHANGELOG.md
-            # Run Semantic Release for the directory
+            sed -i "s/\[[0-9]\+\.[0-9]\+\.[0-9]\+\]/[${version}] $(date +'%Y-%m-%d')/" CHANGELOG.md
+        # Run Semantic Release for the directory
             echo "Running Semantic Release for $APP_NAME"
             docker run --rm \
               -e GITHUB_TOKEN=${{ secrets.PAT_GITHUB2 }} \
               -e TAG_FORMAT="${APP_NAME}-v\${version}" \
               -e ADDITIONAL_PACKAGES='["@semantic-release/changelog", "@semantic-release/git"]' \
-              -e PLUGINS='["@semantic-release/commit-analyzer", "@semantic-release/release-notes-generator", ["@semantic-release/changelog", {changelogTitle: "# CHANGELOG"}], "@semantic-release/github", "@semantic-release/git"]' \
+              -e PLUGINS='['@semantic-release/commit-analyzer', '@semantic-release/release-notes-generator', ['@semantic-release/changelog', {changelogTitle: "# CHANGELOG"}], '@semantic-release/github', '@semantic-release/git']' \
               -e BRANCHES='["master"]' \
               -v $(pwd):/workspace \
               ghcr.io/codfish/semantic-release-action:v2
