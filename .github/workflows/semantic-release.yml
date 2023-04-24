@@ -28,7 +28,13 @@ jobs:
         id: update_tag_format
         run: |
           APP_NAME=${{ matrix.app_name }}
-          echo "::set-output name=tag_format::${APP_NAME}-v\${{ env.VERSION }}"
+          echo "::set-output name=tag_format::${APP_NAME}-v\${version}"
+
+      # - name: Update tag format
+      #   id: update_tag_format
+      #   run: |
+      #     APP_NAME=$(echo "${{ steps.changed_dirs.outputs.dirs }}" | awk '{print tolower($0)}')
+      #     echo "::set-output name=tag_format::${APP_NAME}-v\${version}"
 
       # Get the latest version tag
       - name: Get latest version tag
