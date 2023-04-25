@@ -11,7 +11,7 @@ jobs:
   release:
     strategy:
       matrix:
-        app: ${{ steps.get_changed_dir.outputs.dir }} # Use the changed directory as the value for 'app'
+        app: '${{ steps.get_changed_dir.outputs.dir }}' # Use the changed directory as the value for 'app'
     name: Semantic Release for ${{ matrix.app }}
     runs-on: ubuntu-latest
     steps:
@@ -23,12 +23,14 @@ jobs:
       # Get the name of the directory that was changed
       - name: Get changed directory
         id: get_changed_dir
-        run: echo "::set-output name=dir::$(dirname $(jq -r '.commits[-1].added[] | select(test("^applications/.*")) // .commits[-1].removed[] | select(test("^applications/.*")) // .commits[-1].modified[] | select(test("^applications/.*")) // empty) )"
+        run: 
+          echo "::set-output name=dir::$(dirname $(jq -r '.commits[-1].added[] | select(test("^applications/.*")) // .commits[-1].removed[] | select(test("^applications/.*")) // .commits[-1].modified[] | select(test("^applications/.*")) // empty) )"
         
       # Update the tag format to include the name of the directory
       - name: Update tag format
         id: update_tag_format
-        run: echo "::set-output name=tag_format::${{ steps.get_changed_dir.outputs.dir }}-v\${{ env.VERSION }}"
+        run: 
+          echo "::set-output name=tag_format::${{ steps.get_changed_dir.outputs.dir }}-v\${{ env.VERSION }}"
         env:
           VERSION: ${{ github.run_number }}
         
