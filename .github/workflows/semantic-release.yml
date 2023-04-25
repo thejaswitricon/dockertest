@@ -32,12 +32,18 @@ jobs:
           matrix=$(echo "${changed_dirs}" | awk '{print "app_name="tolower($0)}')
           echo "::set-output name=matrix::$matrix"
 
-      # Update the tag format to include the name of the directory
+      - name: Debug
+        run: |
+         echo "APP_NAME=${{ matrix.app_name }}"
+         echo "VERSION=${{ env.VERSION }}"
+         echo "TAG_FORMAT=${{ steps.update_tag_format.outputs.tag_format }}"
+
       - name: Update tag format
         id: update_tag_format
         run: |
-          APP_NAME=${{ matrix.app_name }}
-          echo "::set-output name=tag_format::${APP_NAME}-v\${{ env.VERSION }}" # Use env.VERSION instead of version
+         APP_NAME=${{ matrix.app_name }}
+         echo "::set-output name=tag_format::${APP_NAME}-v${{ env.VERSION }}"
+
 
       # Add new version to changelog
       - name: Add new version to changelog
