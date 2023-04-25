@@ -1,66 +1,55 @@
 name: Semantic Release for Apps
+
 on:
   push:
     branches:
       - master
     paths:
-      - 'applications/*/*'  # Only trigger on changes in subdirectories of 'applications'
+      - 'applications/**'
+      
 permissions: write-all
-
 jobs:
   release:
-    strategy:
-      matrix:
-        app: '${{ steps.get_changed_dir.outputs.dir }}' # Use the changed directory as the value for 'app'
-    name: Semantic Release for ${{ matrix.app }}
+    name: Semantic Release
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+        id: checkout
         with:
           fetch-depth: 0
-          
-      # Get the name of the directory that was changed
-      - name: Get changed directory
-        id: get_changed_dir
-        run: 
-          echo "::set-output name=dir::$(dirname $(jq -r '.commits[-1].added[] | select(test("^applications/.*")) // .commits[-1].removed[] | select(test("^applications/.*")) // .commits[-1].modified[] | select(test("^applications/.*")) // empty) )"
-        
-      # Update the tag format to include the name of the directory
-      - name: Update tag format
-        id: update_tag_format
-        run: 
-          echo "::set-output name=tag_format::${{ steps.get_changed_dir.outputs.dir }}-v\${{ env.VERSION }}"
-        env:
-          VERSION: ${{ github.run_number }}
-        
-      # Add new version to changelog
-      - name: Add version to changelog
-        id: add_version_to_changelog
-        run: |
-          version=$(git describe --tags --abbrev=0)
-          sed -i "s/\[[0-9]\+\.[0-9]\+\.[0-9]\+\]/[${version}] $(date +'%Y-%m-%d')/" CHANGELOG.md
-        continue-on-error: true
-        
-      # Semantic Release
-      - name: Semantic Release
-        uses: docker://ghcr.io/codfish/semantic-release-action:v2
-        id: semantic
-        env:
-          GITHUB_TOKEN: ${{ secrets.PAT_GITHUB2 }}
-        with:
-          tag_format: ${{ steps.update_tag_format.outputs.tag_format }}
-          additional_packages: |
-            ['@semantic-release/changelog', '@semantic-release/git']
-          plugins: |
-            ['@semantic-release/commit-analyzer', '@semantic-release/release-notes-generator', ['@semantic-release/changelog', {changelogTitle: '# CHANGELOG'}], '@semantic-release/github', '@semantic-release/git']
 
-          branches: |
-            [
-              'master'
-            ]
-            
-      # Output semantic release summary
+      # Get the name of the directory that was changed
+      - name: Get changed directories
+        id: changed_dirs
+        run: |
+          # get a list of directories that were changed in this commit
+          dirs=$(git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | awk -F/ '{print $2}' | sort -u)
+          # create a matrix with one job per directory
+          echo "::set-output name=matrix::$(echo $dirs | jq -R 'split("\n") | map({"dir": .})' | jq -c '{"include": .}')"
+
+      # Execute one job per directory in the matrix
+      - name: Release apps
+        id: release_apps
+        uses: docker://ghcr.io/codfish/matrix-command-action:v1
+        with:
+          command: |
+            APP_NAME=$(echo "${{ matrix.dir }}" | awk '{print tolower($0)}')
+            echo "Updating tag format for ${APP_NAME}"
+            echo "::set-output name=tag_format::${APP_NAME}-v\${{ env.VERSION }}"
+            echo "Adding new version to changelog for ${APP_NAME}"
+            version=$(git describe --tags --abbrev=0)
+            sed -i "s/\[[0-9]\+\.[0-9]\+\.[0-9]\+\]/[${version}] $(date +'%Y-%m-%d')/" applications/${APP_NAME}/CHANGELOG.md
+            echo "Releasing ${APP_NAME}"
+            docker run --rm -v $(pwd):/app -w /app ghcr.io/codfish/semantic-release:v2.4.2 sh -c "yarn install && npx semantic-release --no-ci"
+
+          # Pass in the tag format generated in the previous step
+          tag_format: ${{ steps.update_tag_format.outputs.tag_format }}
+
+          # Pass in the list of directories as a matrix
+          matrix: ${{ steps.changed_dirs.outputs.matrix }}
+
+      # Output summary
       - name: Semantic Release Output Summary
         id: semantic_summary
         run: |
@@ -69,6 +58,7 @@ jobs:
           echo "${{ toJson(steps.semantic.outputs) }}" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
         continue-on-error: true
+
 
 
 # name: Semantic Release for Apps
