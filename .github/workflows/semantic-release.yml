@@ -49,16 +49,8 @@ jobs:
           additional_packages: |
             ['@semantic-release/changelog', '@semantic-release/git']
           plugins: |
-            [
-              '@semantic-release/commit-analyzer',
-              '@semantic-release/release-notes-generator',
-              ['@semantic-release/changelog', {changelogTitle: '# CHANGELOG'}],
-              '@semantic-release/github',
-              ['@semantic-release/git', {
-                assets: ['CHANGELOG.md'],
-                message: 'chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}\n\nSigned-off-by: Thejaswiiii <abc@gmail.com>'
-              }]
-            ]
+            ['@semantic-release/commit-analyzer', '@semantic-release/release-notes-generator', ['@semantic-release/changelog', {changelogTitle: '# CHANGELOG'}], '@semantic-release/github', '@semantic-release/git']
+
           branches: |
             [
               'master'
