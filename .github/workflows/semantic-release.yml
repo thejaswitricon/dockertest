@@ -29,15 +29,16 @@ jobs:
       - name: Update tag format
         id: update_tag_format
         run: 
-          echo "::set-output name=tag_format::${{ steps.changed_dir.outputs.dir }}-v\${{ env.VERSION }}"
-        env:
-          VERSION: ${{ github.run_number }}
+          echo "::set-output name=tag_format::${{ steps.changed_dir.outputs.dir }}-v\${version}"
+        # env:
+        #   VERSION: ${{ github.run_number }}
         
       # Add new version to changelog
       - name: Add version to changelog
         id: add_version_to_changelog
         run: |
-          sed -i "s/\[[0-9]\+\.[0-9]\+\.[0-9]\+\]/[${{ env.VERSION }}] $(date +'%Y-%m-%d')/" CHANGELOG.md
+          version=$(git describe --tags --abbrev=0)
+          sed -i "s/\[[0-9]\+\.[0-9]\+\.[0-9]\+\]/[${version}] $(date +'%Y-%m-%d')/" CHANGELOG.md
         continue-on-error: true
         
       # Semantic Release
