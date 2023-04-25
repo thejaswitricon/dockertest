@@ -25,14 +25,6 @@ jobs:
         run: 
           echo "::set-output name=dir::${{ matrix.app }}"
         
-      # Update the tag format to include the name of the directory
-      - name: Update tag format
-        id: update_tag_format
-        run: 
-          echo "::set-output name=tag_format::${{ steps.changed_dir.outputs.dir }}-v\${version}"
-        # env:
-        #   VERSION: ${{ github.run_number }}
-        
       # Add new version to changelog
       - name: Add version to changelog
         id: add_version_to_changelog
@@ -48,7 +40,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.PAT_GITHUB2 }}
         with:
-          tag_format: ${{ steps.update_tag_format.outputs.tag_format }}
           additional_packages: |
             ['@semantic-release/changelog', '@semantic-release/git']
           plugins: |
@@ -68,6 +59,7 @@ jobs:
           echo "${{ toJson(steps.semantic.outputs) }}" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
         continue-on-error: true
+
 
 
 # name: Semantic Release for Apps
