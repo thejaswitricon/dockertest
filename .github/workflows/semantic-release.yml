@@ -5,15 +5,15 @@ on:
       - master
     paths:
       - 'applications/*/*'  # Only trigger on changes in subdirectories of 'applications'
-permissions: write-all
 
 jobs:
   release:
     strategy:
       matrix:
-        app: '${{ steps.get_changed_dir.outputs.dir }}' # Use the changed directory as the value for 'app'
+        app: [app1, app2] # Add all application directories you want to run
     name: Semantic Release for ${{ matrix.app }}
     runs-on: ubuntu-latest
+    if: ${{ matrix.app == steps.changed_dir.outputs.dir }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -22,15 +22,13 @@ jobs:
           
       # Get the name of the directory that was changed
       - name: Get changed directory
-        id: get_changed_dir
-        run: 
-          echo "::set-output name=dir::$(dirname $(jq -r '.commits[-1].added[] | select(test("^applications/.*")) // .commits[-1].removed[] | select(test("^applications/.*")) // .commits[-1].modified[] | select(test("^applications/.*")) // empty) )"
+        id: changed_dir
+        run: echo "::set-output name=dir::${{ matrix.app }}"
         
       # Update the tag format to include the name of the directory
       - name: Update tag format
         id: update_tag_format
-        run: 
-          echo "::set-output name=tag_format::${{ steps.get_changed_dir.outputs.dir }}-v\${{ env.VERSION }}"
+        run: echo "::set-output name=tag_format::${{ steps.changed_dir.outputs.dir }}-v\${{ env.VERSION }}"
         env:
           VERSION: ${{ github.run_number }}
         
