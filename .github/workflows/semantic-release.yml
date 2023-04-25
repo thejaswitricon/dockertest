@@ -10,7 +10,7 @@ jobs:
   release:
     strategy:
       matrix:
-        app: [app1, app2, app3, app4] # Add all application directories you want to run
+        app: [app1, app2] # Add all application directories you want to run
     name: Semantic Release for ${{ matrix.app }}
     runs-on: ubuntu-latest
     steps:
