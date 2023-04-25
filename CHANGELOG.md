@@ -1,6 +1,14 @@
 # CHANGELOG
 
-# [1.5.0](https://github.com/thejaswitricon/dockertest/compare/app1-v1.4.33...app1-v1.5.0) (2023-04-25)
+# [1.6.0](https://github.com/thejaswitricon/dockertest/compare/app1-v1.5.0...app1-v1.6.0) (2023-04-25)
+
+
+### Features
+
+* app1 and app2 ([9454c48](https://github.com/thejaswitricon/dockertest/commit/9454c48963959cdc20894f5e38106358aa2c8480))
+* app1 and app2 ([75ca1cd](https://github.com/thejaswitricon/dockertest/commit/75ca1cd2d8849e94cab8caf9fcbf60b1491914eb))
+
+# [app1-v1.5.0] 2023-04-25(https://github.com/thejaswitricon/dockertest/compare/app1-v1.4.33...app1-v1.5.0) (2023-04-25)
 
 
 ### Bug Fixes
