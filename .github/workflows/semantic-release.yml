@@ -35,22 +35,25 @@ jobs:
       - name: Update tag format
         id: update_tag_format
         run: |
-         APP_NAMES=$(echo "${{ steps.generate_matrix.outputs.matrix }}" | grep -o 'app_name=[^ ]*' | sed 's/app_name=//g')
-         for APP_NAME in $APP_NAMES; do
-          echo "::set-output name=${APP_NAME}_tag_format::${APP_NAME}-v\${version}"
-         done
+          APP_NAMES=$(echo "${{ steps.generate_matrix.outputs.matrix }}" | grep -o 'app_name=[^ ]*' | sed 's/app_name=//g')
+          for APP_NAME in $APP_NAMES; do
+            echo "::set-output name=${APP_NAME}_tag_format::${APP_NAME}-v\${version}"
+          done
 
       - name: Add new version to changelog
         id: add_version_to_changelog
         run: |
-         version=$(git describe --tags --abbrev=0)
-         changelog_path="./CHANGELOG.md"
-         if [ -f "$changelog_path" ]; then
-           sed -i "s/\[[0-9]\+\.[0-9]\+\.[0-9]\+\]/[${version}] $(date +'%Y-%m-%d')/" "$changelog_path"
-         else
-           echo "Changelog not found in root directory"
-         fi
-        continue-on-error: true   
+          version=$(git describe --tags --abbrev=0)
+          for app_dir in ${{ steps.changed_dirs.outputs.dirs }}; do
+           app_name=$(echo "$app_dir" | tr '[:upper:]' '[:lower:]')
+           changelog_path="./CHANGELOG.md"
+           if [ -f "$changelog_path" ]; then
+             sed -i "s/\[[0-9]\+\.[0-9]\+\.[0-9]\+\]/[${version}] $(date +'%Y-%m-%d') - ${app_name}/" "$changelog_path"
+           else
+            echo "Changelog not found for app $app_dir"
+           fi
+          done
+        continue-on-error: true
 
       - name: Semantic Release
         uses: docker://ghcr.io/codfish/semantic-release-action:v2
