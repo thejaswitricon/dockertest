@@ -54,14 +54,14 @@ jobs:
           fi
          done
         continue-on-error: true   
-        
+
       - name: Semantic Release
         uses: docker://ghcr.io/codfish/semantic-release-action:v2
         id: semantic
         env:
           GITHUB_TOKEN: ${{ secrets.PAT_GITHUB2 }}
         with:
-          tag_format: '${{ matrix.app_name }}-v${{ steps.get_version.outputs.version }}'
+          tag_format: '${{ steps.update_tag_format.outputs.APP_NAME_tag_format }}'
           additional_packages: |
             ['@semantic-release/changelog', '@semantic-release/git']
           plugins: |
