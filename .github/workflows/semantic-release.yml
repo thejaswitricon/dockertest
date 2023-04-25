@@ -18,7 +18,7 @@ jobs:
         uses: actions/checkout@v2
         id: checkout
         with:
-          fetch-depth: 0 # Add all the application names here
+          fetch-depth: 0
 
       - name: Get changed directories
         id: changed_dirs
@@ -32,57 +32,32 @@ jobs:
           matrix=$(echo "${changed_dirs}" | awk '{print "app_name="tolower($0)}')
           echo "::set-output name=matrix::$matrix"
 
-      - name: Debug
+      - name: Run Semantic Release for Each App
+        id: semantic_release_for_each_app
         run: |
-         echo "APP_NAME=${{ matrix.app_name }}"
-         echo "VERSION=${{ env.VERSION }}"
-         echo "TAG_FORMAT=${{ steps.update_tag_format.outputs.tag_format }}"
+          changed_dirs="${{ steps.changed_dirs.outputs.dirs }}"
+          for app in $changed_dirs
+          do
+            echo "Running semantic-release for $app"
+            # Update the tag format to include the name of the directory
+            APP_NAME=$(echo "${app}" | awk '{print tolower($0)}')
+            echo "::set-output name=tag_format::${APP_NAME}-v\${version}" >> $GITHUB_ENV
+            # Add new version to changelog
+            version=$(git describe --tags --abbrev=0)
+            sed -i "s/\[[0-9]\+\.[0-9]\+\.[0-9]\+\]/[${version}] $(date +'%Y-%m-%d')/" "applications/${app}/CHANGELOG.md"
+            # Semantic Release
+            echo "Using tag format ${{ env.tag_format }} for $app"
+            docker run --rm \
+              -v "$(pwd)":/usr/src/app \
+              -v "${HOME}/.ssh:/root/.ssh" \
+              -e GITHUB_TOKEN \
+              -e tag_format="${{ env.tag_format }}" \
+              -e additional_packages="${{ env.additional_packages }}" \
+              -e plugins="${{ env.plugins }}" \
+              -e branches="${{ env.branches }}" \
+              ghcr.io/codfish/semantic-release-action:v2
+          done
 
-      - name: Update tag format
-        id: update_tag_format
-        run: |
-         APP_NAME=${{ matrix.app_name }}
-         echo "::set-output name=tag_format::${APP_NAME}-v${version}"
-
-
-      # Add new version to changelog
-      - name: Add new version to changelog
-        id: add_version_to_changelog
-        run: |
-          version=$(git describe --tags --abbrev=0)
-          sed -i "s/\[[0-9]\+\.[0-9]\+\.[0-9]\+\]/[${version}] $(date +'%Y-%m-%d')/" CHANGELOG.md
-        continue-on-error: true
-
-      # Semantic Release
-      - name: Semantic Release
-        uses: docker://ghcr.io/codfish/semantic-release-action:v2
-        id: semantic
-        env:
-          GITHUB_TOKEN: ${{ secrets.PAT_GITHUB2 }}
-          VERSION: ${{ steps.semantic.outputs.release-version }} # Use the semantic-release output version
-        with:
-          tag_format: '${{ steps.update_tag_format.outputs.tag_format }}'
-          additional_packages: |
-            ['@semantic-release/changelog', '@semantic-release/git']
-          plugins: |
-            [
-              '@semantic-release/commit-analyzer',
-              '@semantic-release/release-notes-generator',
-              ['@semantic-release/changelog', {changelogTitle: '# CHANGELOG'}],
-              '@semantic-release/github',
-              ['@semantic-release/git', {
-                assets: ['CHANGELOG.md'],
-                message: 'chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}\n\nSigned-off-by: Thejaswiiii <abc@gmail.com>'
-              }]
-            ]
-          # specify default branches to add support for the `main` branch
-          # which semantic-release doesn't have as a default yet.
-          branches: |
-            [
-              'master'
-            ]
-
-      # Semantic Release Output Summary
       - name: Semantic Release Output Summary
         id: semantic_summary
         run: |
@@ -91,6 +66,7 @@ jobs:
           echo "${{ toJson(steps.semantic.outputs) }}" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
         continue-on-error: true
+
 
 # name: Semantic Release for Apps
 
