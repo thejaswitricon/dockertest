@@ -1,6 +1,13 @@
 # CHANGELOG
 
-# [2.14.0](https://github.com/thejaswitricon/dockertest/compare/v2.13.0...v2.14.0) (2023-04-25)
+# [2.15.0](https://github.com/thejaswitricon/dockertest/compare/v2.14.0...v2.15.0) (2023-04-25)
+
+
+### Features
+
+* app1 and app2 ([5fd72c1](https://github.com/thejaswitricon/dockertest/commit/5fd72c15c4b3464034fa16e894e23bd53c866c22))
+
+# [v2.14.0] 2023-04-25(https://github.com/thejaswitricon/dockertest/compare/v2.13.0...v2.14.0) (2023-04-25)
 
 
 ### Features
