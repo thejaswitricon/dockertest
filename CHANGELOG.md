@@ -1,6 +1,13 @@
 # CHANGELOG
 
-# [1.8.0](https://github.com/thejaswitricon/dockertest/compare/app2-v1.7.0...app2-v1.8.0) (2023-04-25)
+# [1.9.0](https://github.com/thejaswitricon/dockertest/compare/app2-v1.8.0...app2-v1.9.0) (2023-04-25)
+
+
+### Features
+
+* app1 and app2 ([0555c3f](https://github.com/thejaswitricon/dockertest/commit/0555c3f3efb4157a3d67041eade301e86da61a83))
+
+# [app2-v1.8.0] 2023-04-25(https://github.com/thejaswitricon/dockertest/compare/app2-v1.7.0...app2-v1.8.0) (2023-04-25)
 
 
 ### Features
