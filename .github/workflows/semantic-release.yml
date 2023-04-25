@@ -20,26 +20,29 @@ jobs:
           fetch-depth: 0
           
       # Get the name of the directory that was changed
-      - name: Get changed directory
-        id: changed_dir
-        run: echo "::set-output name=dir::${{ matrix.app }}"
-        
+      - name: Get changed directories
+        id: changed_dirs
+        run: |
+          echo "::set-output name=dirs::$(git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | awk -F/ '{print $2}' | sort -u)"
+
       # Update the tag format to include the name of the directory
-      # Update the tag format to include the name of the directory
+
       - name: Update tag format
         id: update_tag_format
-        run: echo "::set-output name=tag_format::${{ steps.changed_dir.outputs.dir }}-v_${{ env.VERSION }}"
-        env:
-         VERSION: ${{ github.run_number }}
+        run: |
+          APP_NAME=$(echo "${{ steps.changed_dirs.outputs.dirs }}" | awk '{print tolower($0)}')
+          echo "::set-output name=tag_format::${APP_NAME}-v\${version}"
 
-        
-      # Add new version to changelog
-      - name: Add version to changelog
+
+
+      - name: Add new version to changelog
         id: add_version_to_changelog
         run: |
-          sed -i "s/\[[0-9]\+\.[0-9]\+\.[0-9]\+\]/[${{ env.VERSION }}] $(date +'%Y-%m-%d')/" CHANGELOG.md
+          version=$(git describe --tags --abbrev=0)
+          sed -i "s/\[[0-9]\+\.[0-9]\+\.[0-9]\+\]/[${version}] $(date +'%Y-%m-%d')/" CHANGELOG.md        
         continue-on-error: true
-        
+
+      # https://github.com/marketplace/actions/semantic-release-action#usage
       # Semantic Release
       - name: Semantic Release
         uses: docker://ghcr.io/codfish/semantic-release-action:v2
