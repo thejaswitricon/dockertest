@@ -28,9 +28,15 @@ jobs:
       - name: Generate matrix
         id: generate_matrix
         run: |
-          changed_dirs="${{ steps.changed_dirs.outputs.dirs }}"
-          matrix=$(echo "${changed_dirs}" | awk '{print "app_name="tolower($0)}')
-          echo "::set-output name=matrix::$matrix"
+         changed_dirs="${{ steps.changed_dirs.outputs.dirs }}"
+         matrix=""
+          if echo "$changed_dirs" | grep -q 'app1'; then
+            matrix+="app1_name=app1 "
+          fi
+          if echo "$changed_dirs" | grep -q 'app2'; then
+            matrix+="app2_name=app2 "
+          fi
+            echo "::set-output name=matrix::$matrix"
 
       - name: Update tag format
         id: update_tag_format
