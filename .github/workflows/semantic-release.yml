@@ -13,31 +13,24 @@ jobs:
   release:
     name: Semantic Release
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        app_name: [app1, app2] # Add all the application names here
-
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+        id: checkout
         with:
-          fetch-depth: 0
+          fetch-depth: 0 # Add all the application names here
 
-      # Check if the changed path matches with the app name
-      - name: Check path
-        id: check_path
-        run: |
-          echo "::set-output name=match::$(echo ${{ github.event_path }} | grep -q '/${{ matrix.app_name }}/'; echo $?)"
-      # Only continue if there is a match
-      - name: Continue on match
-        if: steps.check_path.outputs.match == '0'
-        run: exit 0
-
-      # Get the name of the directory that was changed
       - name: Get changed directories
         id: changed_dirs
         run: |
           echo "::set-output name=dirs::$(git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | awk -F/ '{print $2}' | sort -u)"
+
+      - name: Generate matrix
+        id: generate_matrix
+        run: |
+          changed_dirs="${{ steps.changed_dirs.outputs.dirs }}"
+          matrix=$(echo "${changed_dirs}" | awk '{print "app_name="tolower($0)}')
+          echo "::set-output name=matrix::$matrix"
 
       # Update the tag format to include the name of the directory
       - name: Update tag format
