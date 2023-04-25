@@ -5,7 +5,7 @@ on:
       - master
     paths:
       - 'applications/*/*'  # Only trigger on changes in subdirectories of 'applications'
-
+permissions: write-all
 jobs:
   release:
     strategy:
