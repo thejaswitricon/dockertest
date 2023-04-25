@@ -28,15 +28,9 @@ jobs:
       - name: Generate matrix
         id: generate_matrix
         run: |
-         changed_dirs="${{ steps.changed_dirs.outputs.dirs }}"
-         matrix=""
-          if echo "$changed_dirs" | grep -q 'app1'; then
-            matrix+="app1_name=app1 "
-          fi
-          if echo "$changed_dirs" | grep -q 'app2'; then
-            matrix+="app2_name=app2 "
-          fi
-            echo "::set-output name=matrix::$matrix"
+          changed_dirs="${{ steps.changed_dirs.outputs.dirs }}"
+          matrix=$(echo "${changed_dirs}" | awk '{print "app_name="tolower($0)}')
+          echo "::set-output name=matrix::$matrix"
 
       - name: Update tag format
         id: update_tag_format
@@ -50,15 +44,12 @@ jobs:
         id: add_version_to_changelog
         run: |
          version=$(git describe --tags --abbrev=0)
-         for app_dir in ${{ steps.changed_dirs.outputs.dirs }}; do
-          app_name=$(echo "$app_dir" | tr '[:upper:]' '[:lower:]')
-          changelog_path="./CHANGELOG.md"
-          if [ -f "$changelog_path" ]; then
-            sed -i "s/\[[0-9]\+\.[0-9]\+\.[0-9]\+\]/[${version}] $(date +'%Y-%m-%d')/" "$changelog_path"
-          else
-           echo "Changelog not found for app $app_dir"
-          fi
-         done
+         changelog_path="./CHANGELOG.md"
+         if [ -f "$changelog_path" ]; then
+           sed -i "s/\[[0-9]\+\.[0-9]\+\.[0-9]\+\]/[${version}] $(date +'%Y-%m-%d')/" "$changelog_path"
+         else
+           echo "Changelog not found in root directory"
+         fi
         continue-on-error: true   
 
       - name: Semantic Release
