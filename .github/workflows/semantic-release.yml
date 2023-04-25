@@ -32,31 +32,53 @@ jobs:
           matrix=$(echo "${changed_dirs}" | awk '{print "app_name="tolower($0)}')
           echo "::set-output name=matrix::$matrix"
 
-      - name: Run Semantic Release for Each App
-        id: semantic_release_for_each_app
+      - name: Update tag format
+        id: update_tag_format
         run: |
-          changed_dirs="${{ steps.changed_dirs.outputs.dirs }}"
-          for app in $changed_dirs
-          do
-            echo "Running semantic-release for $app"
-            # Update the tag format to include the name of the directory
-            APP_NAME=$(echo "${app}" | awk '{print tolower($0)}')
-            echo "::set-output name=tag_format::${APP_NAME}-v\${version}" >> $GITHUB_ENV
-            # Add new version to changelog
-            version=$(git describe --tags --abbrev=0)
-            sed -i "s/\[[0-9]\+\.[0-9]\+\.[0-9]\+\]/[${version}] $(date +'%Y-%m-%d')/" "applications/${app}/CHANGELOG.md"
-            # Semantic Release
-            echo "Using tag format ${{ env.tag_format }} for $app"
-            docker run --rm \
-              -v "$(pwd)":/usr/src/app \
-              -v "${HOME}/.ssh:/root/.ssh" \
-              -e GITHUB_TOKEN \
-              -e tag_format="${{ env.tag_format }}" \
-              -e additional_packages="${{ env.additional_packages }}" \
-              -e plugins="${{ env.plugins }}" \
-              -e branches="${{ env.branches }}" \
-              ghcr.io/codfish/semantic-release-action:v2
-          done
+         APP_NAMES=$(echo "${{ steps.generate_matrix.outputs.matrix }}" | grep -o 'app_name=[^ ]*' | sed 's/app_name=//g')
+         for APP_NAME in $APP_NAMES; do
+          echo "::set-output name=${APP_NAME}_tag_format::${APP_NAME}-v\${version}"
+         done
+
+      - name: Add new version to changelog
+        id: add_version_to_changelog
+        run: |
+         version=$(git describe --tags --abbrev=0)
+         for app_dir in ${{ steps.changed_dirs.outputs.dirs }}; do
+          app_name=$(echo "$app_dir" | tr '[:upper:]' '[:lower:]')
+          changelog_path="./CHANGELOG.md"
+          if [ -f "$changelog_path" ]; then
+            sed -i "s/\[[0-9]\+\.[0-9]\+\.[0-9]\+\]/[${version}] $(date +'%Y-%m-%d')/" "$changelog_path"
+          else
+           echo "Changelog not found for app $app_dir"
+          fi
+         done
+        continue-on-error: true   
+        
+      - name: Semantic Release
+        uses: docker://ghcr.io/codfish/semantic-release-action:v2
+        id: semantic
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT_GITHUB2 }}
+        with:
+          tag_format: '${{ matrix.app_name }}-v${{ steps.get_version.outputs.version }}'
+          additional_packages: |
+            ['@semantic-release/changelog', '@semantic-release/git']
+          plugins: |
+           [
+            '@semantic-release/commit-analyzer',
+            '@semantic-release/release-notes-generator',
+            ['@semantic-release/changelog', {changelogTitle: '# CHANGELOG'}],
+           '@semantic-release/github',
+            ['@semantic-release/git', {
+             assets: ['CHANGELOG.md'],
+             message: 'chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}\n\nSigned-off-by: Thejaswiiii <abc@gmail.com>'
+            }]
+            ]
+          branches: | 
+           [
+           'master'
+           ]
 
       - name: Semantic Release Output Summary
         id: semantic_summary
