@@ -50,7 +50,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.PAT_GITHUB2 }}
         with:
-          tag_format: ${{ steps.update_tag_format.outputs.tag_format }}
+          tag_format: '${{ steps.update_tag_format.outputs.tag_format }}'
           additional_packages: |
             ['@semantic-release/changelog', '@semantic-release/git']
           plugins: |
@@ -64,12 +64,19 @@ jobs:
                 message: 'chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}\n\nSigned-off-by: Thejaswiiii <abc@gmail.com>'
               }]
             ]
+          # specify default branches to add support for the `main` branch
+          # which semantic-release doesn't have as a default yet.
           branches: |
             [
               'master'
             ]
-            
-      # Output semantic release summary
+
+      # # Get the latest version tag
+      # - name: Get latest version tag
+      #   run: |
+      #     version=$(git describe --tags --abbrev=0)
+      #     echo "::set-output name=version::$version"
+
       - name: Semantic Release Output Summary
         id: semantic_summary
         run: |
@@ -78,6 +85,8 @@ jobs:
           echo "${{ toJson(steps.semantic.outputs) }}" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
         continue-on-error: true
+            
+      
 
 
 # name: Semantic Release for Apps
