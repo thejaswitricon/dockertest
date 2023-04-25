@@ -42,7 +42,7 @@ jobs:
         id: update_tag_format
         run: |
          APP_NAME=${{ matrix.app_name }}
-         echo "::set-output name=tag_format::${APP_NAME}-v${{ env.VERSION }}"
+         echo "::set-output name=tag_format::${APP_NAME}-v${version}"
 
 
       # Add new version to changelog
