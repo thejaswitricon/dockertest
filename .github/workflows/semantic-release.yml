@@ -6,11 +6,12 @@ on:
     paths:
       - 'applications/*/*'  # Only trigger on changes in subdirectories of 'applications'
 permissions: write-all
+
 jobs:
   release:
     strategy:
       matrix:
-        app: [app1, app2] # Add all application directories you want to run
+        app: ${{ steps.get_changed_dir.outputs.dir }} # Use the changed directory as the value for 'app'
     name: Semantic Release for ${{ matrix.app }}
     runs-on: ubuntu-latest
     steps:
@@ -21,18 +22,16 @@ jobs:
           
       # Get the name of the directory that was changed
       - name: Get changed directory
-        id: changed_dir
-        run: 
-          echo "::set-output name=dir::${{ matrix.app }}"
+        id: get_changed_dir
+        run: echo "::set-output name=dir::$(dirname $(jq -r '.commits[-1].added[] | select(test("^applications/.*")) // .commits[-1].removed[] | select(test("^applications/.*")) // .commits[-1].modified[] | select(test("^applications/.*")) // empty) )"
         
       # Update the tag format to include the name of the directory
       - name: Update tag format
         id: update_tag_format
-        run: 
-          echo "::set-output name=tag_format::${{ steps.changed_dir.outputs.dir }}-v\${version}"
-        # env:
-        #   VERSION: ${{ github.run_number }}
-
+        run: echo "::set-output name=tag_format::${{ steps.get_changed_dir.outputs.dir }}-v\${{ env.VERSION }}"
+        env:
+          VERSION: ${{ github.run_number }}
+        
       # Add new version to changelog
       - name: Add version to changelog
         id: add_version_to_changelog
@@ -48,6 +47,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.PAT_GITHUB2 }}
         with:
+          tag_format: ${{ steps.update_tag_format.outputs.tag_format }}
           additional_packages: |
             ['@semantic-release/changelog', '@semantic-release/git']
           plugins: |
@@ -67,7 +67,6 @@ jobs:
           echo "${{ toJson(steps.semantic.outputs) }}" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
         continue-on-error: true
-
 
 
 # name: Semantic Release for Apps
