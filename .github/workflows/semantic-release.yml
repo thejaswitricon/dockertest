@@ -39,10 +39,8 @@ jobs:
       - name: Update tag format
         id: update_tag_format
         run: |
-          APP_NAMES=$(echo "${{ steps.generate_matrix.outputs.matrix }}" | grep -o 'app_name=[^ ]*' | sed 's/app_name=//g')
-          for APP_NAME in $APP_NAMES; do
-            echo "::set-output name=${APP_NAME}_tag_format::${APP_NAME}-v\${version}"
-          done
+          APP_NAME=$(echo "${{ steps.changed_dirs.outputs.dirs }}" | awk '{print tolower($0)}')
+          echo "::set-output name=tag_format::${APP_NAME}-v\${version}"
 
       - name: Add new version to changelog
         id: add_version_to_changelog
