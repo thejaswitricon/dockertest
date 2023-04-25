@@ -23,24 +23,19 @@ jobs:
       - name: Get changed directories
         id: changed_dirs
         run: |
-          echo "APP_DIRS=$(git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | awk -F/ '{print $(NF-1)}' | sort -u)" >> $GITHUB_ENV
-
-      - name: Set app names
-        id: set_app_names
-        run: |
-          APP_NAMES=$(echo "${{ env.APP_DIRS }}" | tr '\n' ' ')
-          echo "APP_NAMES=$APP_NAMES" >> $GITHUB_ENV
+          echo "::set-output name=dirs::$(git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | awk -F/ '{print $2}' | sort -u)"
 
       - name: Generate matrix
         id: generate_matrix
         run: |
-          matrix=$(echo "${{ env.APP_NAMES }}" | awk '{ for (i=1; i<=NF; i++) print "app_name="tolower($i)}')
+          changed_dirs="${{ steps.changed_dirs.outputs.dirs }}"
+          matrix=$(echo "${changed_dirs}" | awk '{print "app_name="tolower($0)}')
           echo "::set-output name=matrix::$matrix"
 
       - name: Update tag format
         id: update_tag_format
         run: |
-          APP_NAMES=$(echo "${{ env.APP_NAMES }}")
+          APP_NAMES=$(echo "${{ steps.generate_matrix.outputs.matrix }}" | grep -o 'app_name=[^ ]*' | sed 's/app_name=//g')
           for APP_NAME in $APP_NAMES; do
             echo "::set-output name=${APP_NAME}_tag_format::${APP_NAME}-v\${version}"
           done
