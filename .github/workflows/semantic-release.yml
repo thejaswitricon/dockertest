@@ -22,12 +22,14 @@ jobs:
       # Get the name of the directory that was changed
       - name: Get changed directory
         id: changed_dir
-        run: echo "::set-output name=dir::${{ matrix.app }}"
+        run: 
+          echo "::set-output name=dir::${{ matrix.app }}"
         
       # Update the tag format to include the name of the directory
       - name: Update tag format
         id: update_tag_format
-        run: echo "::set-output name=tag_format::${{ steps.changed_dir.outputs.dir }}-v\${{ env.VERSION }}"
+        run: 
+          echo "::set-output name=tag_format::${{ steps.changed_dir.outputs.dir }}-v\${{ env.VERSION }}"
         env:
           VERSION: ${{ github.run_number }}
         
