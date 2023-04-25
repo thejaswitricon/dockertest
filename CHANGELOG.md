@@ -1,6 +1,13 @@
 # CHANGELOG
 
-## [2.16.5](https://github.com/thejaswitricon/dockertest/compare/v2.16.4...v2.16.5) (2023-04-25)
+## [2.16.6](https://github.com/thejaswitricon/dockertest/compare/v2.16.5...v2.16.6) (2023-04-25)
+
+
+### Bug Fixes
+
+* update ([ab5a511](https://github.com/thejaswitricon/dockertest/commit/ab5a511dac582eb7e637940f02129f1232731da6))
+
+## [] 2023-04-25(https://github.com/thejaswitricon/dockertest/compare/v2.16.4...v2.16.5) (2023-04-25)
 
 
 ### Bug Fixes
