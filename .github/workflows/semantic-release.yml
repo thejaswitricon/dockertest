@@ -25,11 +25,13 @@ jobs:
         run: echo "::set-output name=dir::${{ matrix.app }}"
         
       # Update the tag format to include the name of the directory
+      # Update the tag format to include the name of the directory
       - name: Update tag format
         id: update_tag_format
-        run: echo "::set-output name=tag_format::${{ steps.changed_dir.outputs.dir }}-v\${{ env.VERSION }}"
+        run: echo "::set-output name=tag_format::${{ steps.changed_dir.outputs.dir }}-v_${{ env.VERSION }}"
         env:
-          VERSION: ${{ github.run_number }}
+         VERSION: ${{ github.run_number }}
+
         
       # Add new version to changelog
       - name: Add version to changelog
