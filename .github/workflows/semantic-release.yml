@@ -1,3 +1,4 @@
+
 name: Semantic Release for Apps
 
 on:
@@ -6,11 +7,14 @@ on:
       - master
     paths:
       - 'applications/**'
-      
+
 permissions: write-all
 jobs:
-  release:
-    name: Semantic Release
+ release:
+    strategy:
+      matrix:
+        app: [app1, app2]
+    name: Semantic Release for ${{ matrix.app }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -28,26 +32,38 @@ jobs:
           # create a matrix with one job per directory
           echo "::set-output name=matrix::$(echo $dirs | jq -R 'split("\n") | map({"dir": .})' | jq -c '{"include": .}')"
 
-      # Execute one job per directory in the matrix
-      - name: Release apps
-        id: release_apps
-        uses: docker://ghcr.io/codfish/matrix-command-action:v1
-        with:
-          command: |
-            APP_NAME=$(echo "${{ matrix.dir }}" | awk '{print tolower($0)}')
-            echo "Updating tag format for ${APP_NAME}"
-            echo "::set-output name=tag_format::${APP_NAME}-v\${{ env.VERSION }}"
-            echo "Adding new version to changelog for ${APP_NAME}"
+      - name: Generate matrix
+        id: generate_matrix
+        run: |
+          changed_dirs="${{ steps.changed_dirs.outputs.dirs }}"
+          matrix=$(echo "${changed_dirs}" | awk '{print "app_name="tolower($0)}')
+          echo "::set-output name=matrix::$matrix"
+
+      - name: Run Semantic Release for Each App
+        id: semantic_release_for_each_app
+        run: |
+          changed_dirs="${{ steps.changed_dirs.outputs.dirs }}"
+          for app in $changed_dirs
+          do
+            echo "Running semantic-release for $app"
+            # Update the tag format to include the name of the directory
+            APP_NAME=$(echo "${app}" | awk '{print tolower($0)}')
+            echo "::set-output name=tag_format::${APP_NAME}-v\${version}" >> $GITHUB_ENV
+            # Add new version to changelog
             version=$(git describe --tags --abbrev=0)
-            sed -i "s/\[[0-9]\+\.[0-9]\+\.[0-9]\+\]/[${version}] $(date +'%Y-%m-%d')/" applications/${APP_NAME}/CHANGELOG.md
-            echo "Releasing ${APP_NAME}"
-            docker run --rm -v $(pwd):/app -w /app ghcr.io/codfish/semantic-release:v2.4.2 sh -c "yarn install && npx semantic-release --no-ci"
-
-          # Pass in the tag format generated in the previous step
-          tag_format: ${{ steps.update_tag_format.outputs.tag_format }}
-
-          # Pass in the list of directories as a matrix
-          matrix: ${{ steps.changed_dirs.outputs.matrix }}
+            sed -i "s/\[[0-9]\+\.[0-9]\+\.[0-9]\+\]/[${version}] $(date +'%Y-%m-%d')/" "applications/${app}/CHANGELOG.md"
+            # Semantic Release
+            echo "Using tag format ${{ env.tag_format }} for $app"
+            docker run --rm \
+              -v "$(pwd)":/usr/src/app \
+              -v "${HOME}/.ssh:/root/.ssh" \
+              -e GITHUB_TOKEN \
+              -e tag_format="${{ env.tag_format }}" \
+              -e additional_packages="${{ env.additional_packages }}" \
+              -e plugins="${{ env.plugins }}" \
+              -e branches="${{ env.branches }}" \
+              ghcr.io/codfish/semantic-release-action:v2
+          done
 
       # Output summary
       - name: Semantic Release Output Summary
