@@ -19,10 +19,10 @@ jobs:
         id: get_changed
         with:
           github-token: ${{ secrets.PAT_GITHUB2 }}
-          ignore: "!(applications)/**/*,.github/**/*"
+          ignore: "**/+(.github)"
           foldersOnly: true 
           format: csv
-
+          directory: "applications"
       - name: Echo changed files
         run: echo ${{ steps.get_changed.outputs.changed }}
 
