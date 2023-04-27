@@ -31,6 +31,13 @@ jobs:
           folders=$(echo "${{ steps.get_changed.outputs.changed }}" | awk -F/ '{print $2}' | sort -u)
           echo "::set-output name=folders::${folders}"
 
+      - name: Print matrix
+        run: |
+          echo "Changed folders:"
+          echo "${{ toJSON(matrix.folders) }}"
+        env:
+          matrix: ${{ fromJSON(steps.filter_dirs.outputs.folders) }}
+
     #   - name: Set up matrix
     #     id: matrix
     #     run: |
