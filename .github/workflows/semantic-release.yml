@@ -15,15 +15,15 @@ jobs:
     outputs:
       dirs: ${{ steps.filter_dirs.outputs.dirs }}
     steps:
-      - name: Filter dirs
-        id: filter_dirs
-        run: |
-          dirs=$(git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | awk -F '/applications/' '{print $2}' | awk -F/ '{print $1}' | sort -u)
-          echo "::set-output name=dirs::$dirs"
-
-      - name: Print directories with changes
-        run: |
-          echo "Changed directories: ${{ steps.filter_dirs.outputs.dirs }}"
+      - uses: Stockopedia/action-get-changed-files@v1
+        id: get_changed
+        with:
+          github-token: ${{ secrets.PAT_GITHUB2 }}
+          ignore: "**/+(.github)"
+          foldersOnly: false 
+          format: csv
+      - name: Echo changed files
+        run: echo ${{ steps.get_changed.outputs.changed }}
 
     #   - name: Set up matrix
     #     id: matrix
