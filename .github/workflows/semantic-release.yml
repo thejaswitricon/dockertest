@@ -27,7 +27,7 @@ jobs:
     name: Semantic Release
     strategy:
       matrix:
-        dir: ${{ fromJson(steps.get-changed-dirs.outputs.dirs) }}
+        dirs: ${{ steps.get-changed-dirs.outputs.dirs }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -35,11 +35,15 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Print directories with changes
+        run: |
+          echo "Changed directories: ${{ steps.get-changed-dirs.outputs.dirs }}"
+
       # Update the tag format to include the name of the directory
       - name: Update tag format
         id: update_tag_format
         run: |
-          APP_NAME=$(echo "${{ matrix.dir }}" | awk '{print tolower($0)}')
+          APP_NAME=$(echo "${{ matrix.dirs }}" | awk '{print tolower($0)}')
           echo "::set-output name=tag_format::${APP_NAME}-v\${version}"
 
       - name: Add new version to changelog
