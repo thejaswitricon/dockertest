@@ -23,7 +23,7 @@ jobs:
           echo "::set-output name=dirs::$dirs"
 
   release:
-    needs: get-changed-dirs
+    needs: [get-changed-dirs]
     name: Semantic Release
     strategy:
       matrix:
