@@ -8,91 +8,23 @@ on:
       - 'applications/**'
 
 permissions: write-all
-# -------------------------------------------------------------------------------------------------------------------------
-# Event `push`: Compare the preceeding commit -> to the current commit of the main branch.
-# Event `pull_request`: Compare the last commit of main -> to the current commit of a Pull Request branch.
-# -------------------------------------------------------------------------------------------------------------------------
 
 jobs:
-  build:
-    runs-on: ubuntu-latest  # windows-latest | macos-latest
-    name: Test changed-files
+  extract-folders:
+    runs-on: ubuntu-latest
+    outputs:
+      dirs: ${{ steps.filter_dirs.outputs.dirs }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: Stockopedia/action-get-changed-files@v1
+        id: get_changed
         with:
-          fetch-depth: 0  # OR "2" -> To retrieve the preceding commit.
+          github-token: ${{ secrets.PAT_GITHUB2 }}
+          ignore: "!(applications)/**/*,.github/**/*"
+          foldersOnly: true 
+          format: csv
 
-      # Example 1
-      - name: Get changed files
-        id: changed-files
-        uses: tj-actions/changed-files@v35
-        
-        # To compare changes between the current commit and the last pushed remote commit set `since_last_remote_commit: true`. e.g
-        # with:
-        #   since_last_remote_commit: true 
-
-      - name: List all changed files
-        run: |
-          for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
-            echo "$file was changed"
-          done
-
-      # Example 2
-      - name: Get changed files in the docs folder
-        id: changed-files-specific
-        uses: tj-actions/changed-files@v35
-        with:
-          files: applications/*.{js,html}  # Alternatively using: `docs/**` or `docs`
-
-      - name: Run step if any file(s) in the applications folder change
-        if: steps.changed-files-specific.outputs.any_changed == 'true'
-        run: |
-          echo "One or more files in the applications folder has changed."
-          echo "List all the files that have changed: ${{ steps.changed-files-specific.outputs.all_changed_files }}"
-      
-      # # Example 3
-      # - name: Get all changed *.js file(s) or any file in the static folder excluding the docs folder
-      #   id: changed-files-excluded
-      #   uses: tj-actions/changed-files@v35
-      #   with:
-      #     files: |
-      #       **/*.js
-      #       static
-      #     files_ignore: docs
-
-      # - name: Run step if any *.js file(s) or any file in the static folder change
-      #   if: steps.changed-files-excluded.outputs.any_changed == 'true'
-      #   run: |
-      #     echo "One or more *.js file(s) or any file in the static folder but not in the doc folder has changed."
-      #     echo "List all the files that have changed: ${{ steps.changed-files-excluded.outputs.all_changed_files }}"
-
-
-# name: Semantic Release for Apps
-
-# on:
-#   push:
-#     branches:
-#       - master
-#     paths:
-#       - 'applications/**'
-
-# permissions: write-all
-
-# jobs:
-#   extract-folders:
-#     runs-on: ubuntu-latest
-#     outputs:
-#       dirs: ${{ steps.filter_dirs.outputs.dirs }}
-#     steps:
-#       - uses: Stockopedia/action-get-changed-files@v1
-#         id: get_changed
-#         with:
-#           github-token: ${{ secrets.PAT_GITHUB2 }}
-#           ignore: "**/+(.github)"
-#           foldersOnly: true 
-#           format: csv
-#       - name: Echo changed files
-#         run: echo ${{ steps.get_changed.outputs.changed }}
+      - name: Echo changed files
+        run: echo ${{ steps.get_changed.outputs.changed }}
 
     #   - name: Set up matrix
     #     id: matrix
