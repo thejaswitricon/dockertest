@@ -22,8 +22,12 @@ jobs:
           ignore: "**/+(.github)"
           foldersOnly: true 
           format: csv
-      - name: Echo changed files
-        run: echo ${{ steps.get_changed.outputs.changed }}
+      - name: Extract changed folders
+        run: |
+          changed_files=${{ steps.get_changed.outputs.changed }}
+          changed_folders=$(echo "$changed_files" | awk -F ',' '{print $2}' | cut -d '/' -f 2 | sort -u)
+          echo "Changed folders: $changed_folders"
+
 
     #   - name: Set up matrix
     #     id: matrix
