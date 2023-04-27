@@ -18,15 +18,18 @@ jobs:
       - uses: Stockopedia/action-get-changed-files@v1
         id: get_changed
         with:
-          github-token: ${{ secrets.PAT_GITHUB2 }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           ignore: "**/+(.github)"
           foldersOnly: true 
           format: csv
-      - name: Extract changed folders
+      - name: Filter changed directories
         run: |
-          changed_files=${{ steps.get_changed.outputs.changed }}
-          changed_folders=$(echo "$changed_files" | awk -F ',' '{print $2}' | cut -d '/' -f 2 | sort -u)
-          echo "Changed folders: $changed_folders"
+          changed_files="${{ steps.get_changed.outputs.changed }}"
+          directories=$(echo "$changed_files" | sed -n "/^applications\//p" | cut -d'/' -f2 | sort -u)
+          echo "::set-output name=directories::$directories"
+      - name: Print changed directories
+        run: |
+          echo "Changed directories: ${{ steps.filter_changed_dirs.outputs.directories }}"
 
 
     #   - name: Set up matrix
