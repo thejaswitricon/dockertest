@@ -18,7 +18,7 @@ jobs:
       - name: Filter dirs
         id: filter_dirs
         run: |
-          dirs=$(git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | awk -F/ '{print $1}' | sort -u)
+          dirs=$(git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | awk -F '/applications/' '{print $2}' | awk -F/ '{print $1}' | sort -u)
           echo "::set-output name=dirs::$dirs"
 
       - name: Print directories with changes
