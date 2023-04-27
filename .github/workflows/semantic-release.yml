@@ -19,7 +19,7 @@ jobs:
         id: get_changed
         with:
           github-token: ${{ secrets.PAT_GITHUB2 }}
-          ignore: "*, !applications, applications/**/*.*"
+          ignore: "**/+(.github)"
           foldersOnly: true 
           format: csv
       - name: Echo changed files
