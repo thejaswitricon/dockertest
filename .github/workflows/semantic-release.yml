@@ -23,22 +23,21 @@ jobs:
           fetch-depth: 0
           
       # Get the name of the directory that was changed
-      - name: Get changed directories
-        id: changed_dir
-        run: |
-          dirs=$(git diff --name-only HEAD HEAD~ | grep "^applications/" | cut -d/ -f2 | uniq)
-          
-          echo "::set-output name=dirs::${dirs}"
-
-      - name: Print changed directory
-        run: |
-          echo "Changed directory: ${{ steps.changed_dir.outputs.dir }}"  
+      - uses: Stockopedia/action-get-changed-files@v1
+        id: get_changed
+        with:
+          github-token: ${{ secrets.PAT_GITHUB2 }}
+          ignore: "**/+(.github)"
+          foldersOnly: true 
+          format: csv
+      - name: Echo changed files
+        run: echo ${{ steps.get_changed.outputs.changed }}  
 
       # Update the tag format to include the name of the directory
       - name: Update tag format
         id: update_tag_format
         run: 
-          echo "::set-output name=tag_format::${{ steps.changed_dir.outputs.dir }}-v\${version}"
+          echo "::set-output name=tag_format::${{ steps.get_changed.outputs.dir }}-v\${version}"
         # env:
         #   VERSION: ${{ github.run_number }}
 
