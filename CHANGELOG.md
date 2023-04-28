@@ -1,6 +1,13 @@
 # CHANGELOG
 
-# [1.11.0](https://github.com/thejaswitricon/dockertest/compare/app2-v1.10.0...app2-v1.11.0) (2023-04-28)
+# [1.12.0](https://github.com/thejaswitricon/dockertest/compare/app2-v1.11.0...app2-v1.12.0) (2023-04-28)
+
+
+### Features
+
+* app1 ([5923118](https://github.com/thejaswitricon/dockertest/commit/5923118add65c07f85b03bb2b8acd7dc3233ab71))
+
+# [app2-v1.11.0] 2023-04-28(https://github.com/thejaswitricon/dockertest/compare/app2-v1.10.0...app2-v1.11.0) (2023-04-28)
 
 
 ### Features
