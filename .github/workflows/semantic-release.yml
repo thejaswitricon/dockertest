@@ -26,6 +26,7 @@ jobs:
       - uses: Stockopedia/action-get-changed-files@v1
         id: get_changed
         with:
+          path: applications
           github-token: ${{ secrets.PAT_GITHUB2 }}
           ignore: "**/+(.github)"
           foldersOnly: true 
