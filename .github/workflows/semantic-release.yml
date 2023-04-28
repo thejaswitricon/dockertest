@@ -27,7 +27,10 @@ jobs:
         id: changed_dir
         run: 
           echo "::set-output name=dir::${{ matrix.app }}"
-        
+      - name: Print changed directory
+        run: |
+          echo "Changed directory: ${{ steps.changed_dir.outputs.dir }}"  
+
       # Update the tag format to include the name of the directory
       - name: Update tag format
         id: update_tag_format
