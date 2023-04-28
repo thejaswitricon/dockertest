@@ -26,10 +26,8 @@ jobs:
       - name: Get changed directories
         id: changed_dir
         run: |
-          # Find the directories that had changes inside the applications directory
           dirs=$(git diff --name-only HEAD HEAD~ | grep "^applications/" | cut -d/ -f2 | uniq)
           
-          # Set the output variable to the list of changed directories
           echo "::set-output name=dirs::${dirs}"
 
       - name: Print changed directory
