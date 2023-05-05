@@ -29,9 +29,8 @@ jobs:
       - name: Update tag format
         id: update_tag_format
         run: |
-          APP_NAME=$(echo "${{ steps.changed_dirs.outputs.dirs }}" | awk -F/ '{print $2}')
-          FOLDER_NAME=$(echo "${{ steps.changed_dirs.outputs.dirs }}" | awk -F/ '{print $1}')
-          echo "::set-output name=tag_format::${FOLDER_NAME}/${APP_NAME}-v\${version}"
+          APP_NAME=$(echo "${{ steps.changed_dirs.outputs.dirs }}" | awk '{print tolower($0)}')
+          echo "::set-output name=tag_format::${APP_NAME}-v\${version}"
       
       - name: Add new version to changelog
         id: add_version_to_changelog
