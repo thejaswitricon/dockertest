@@ -8,45 +8,71 @@ on:
       - 'applications/**'
 
 permissions: write-all
-  # Optionally you can use `workflow_dispatch` to run Changelog CI Manually
 
 jobs:
-  build:
+  release:
+    name: Semantic Release
     runs-on: ubuntu-latest
-
     steps:
-      # Checks-out your repository
-      - uses: actions/checkout@v2
-
-      - name: Run Changelog CI
-        uses: saadmk11/changelog-ci@v1.1.1
+      - name: Checkout
+        uses: actions/checkout@v2
+        id: checkout
         with:
-          # Optional, you can provide any name for your changelog file,
-          # We currently support Markdown (.md) and reStructuredText (.rst) files
-          # defaults to `CHANGELOG.md` if not provided.
-          changelog_filename: CHANGELOG.rst
-          # Optional, only required when you want more customization
-          # e.g: group your changelog by labels with custom titles,
-          # different version prefix, pull request title and version number regex etc.
-          # config file can be in JSON or YAML format.
-          config_file: changelog-ci-config.json
-          # Optional, This will be used to configure git
-          # defaults to `github-actions[bot]` if not provided.
-          committer_username: 'test'
-          committer_email: 'test@test.com'
-          # Use the tag created by Semantic Release as the release version input
-          release_version: '${{ steps.semantic.outputs.tag }}'
-          # Optional
-          github_token: ${{ secrets.PAT_GITHUB2 }}
+          fetch-depth: 0
 
-      - name: changelog-ci
-        uses: saadmk11/changelog-ci@v1.1.1
-        id: changelog-ci
-
-      - name: Get Changelog Output
+      # Get the name of the directory that was changed
+      - name: Get changed directories
+        id: changed_dirs
         run: |
-          echo "${{ steps.changelog-ci.outputs.changelog }}"
-          echo "${{ steps.changelog-ci.outputs.changelog }}" >> $GITHUB_STEP_SUMMARY
+          echo "::set-output name=dirs::$(git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | awk -F/ '{print $2}' | sort -u)"
+
+      # Update the tag format to include the name of the directory
+      - name: Update tag format
+        id: update_tag_format
+        run: |
+          APP_NAME=$(echo "${{ steps.changed_dirs.outputs.dirs }}" | awk '{print tolower($0)}')
+          echo "::set-output name=tag_format::${APP_NAME}-v\${version}"
+      
+      - name: Add new version to changelog
+        id: add_version_to_changelog
+        run: |
+          version=$(git describe --tags --abbrev=0)
+          sed -i "s/\[[0-9]\+\.[0-9]\+\.[0-9]\+\]/[${version}] $(date +'%Y-%m-%d')/" CHANGELOG.md        
+        continue-on-error: true 
+
+      # https://github.com/marketplace/actions/semantic-release-action#usage
+      - name: Semantic Release
+        uses: docker://ghcr.io/codfish/semantic-release-action:v2
+        id: semantic
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT_GITHUB2 }}
+        with:
+          tag_format: '${{ steps.update_tag_format.outputs.tag_format }}'
+          additional_packages: |
+            ['@semantic-release/changelog', '@semantic-release/git']
+          plugins: |
+            ['@semantic-release/commit-analyzer', '@semantic-release/release-notes-generator', ['@semantic-release/changelog', {changelogTitle: '# CHANGELOG'}], '@semantic-release/github', '@semantic-release/git']
+          # specify default branches to add support for the `main` branch
+          # which semantic-release doesn't have as a default yet.
+          branches: |
+            [
+              'master'
+            ]
+        
+      # # Get the latest version tag
+      # - name: Get latest version tag
+      #   run: |
+      #     version=$(git describe --tags --abbrev=0)
+      #     echo "::set-output name=version::$version"
+
+      - name: Semantic Release Output Summary
+        id: semantic_summary
+        run: |
+          echo "### Semantic Version = ${{ steps.semantic.outputs.release-version }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          echo "${{ toJson(steps.semantic.outputs) }}" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+        continue-on-error: true
 # jobs:
 #   release:
 #     strategy:
