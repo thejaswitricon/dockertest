@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## [1.0.1](https://github.com/thejaswitricon/dockertest/compare/app5/index.js-v1.0.0...app5/index.js-v1.0.1) (2023-05-05)
+
+
+### Bug Fixes
+
+* install dependencies to app5 ([316b802](https://github.com/thejaswitricon/dockertest/commit/316b802bde746e3500b246cede787b6616c729a6))
+* test fix to app3 ([0a4c63c](https://github.com/thejaswitricon/dockertest/commit/0a4c63c8cced0ec8c108059b7eb64db37dd214b6))
+* test fix to app3 ([caffa63](https://github.com/thejaswitricon/dockertest/commit/caffa637aa92d63c559897232762252c28bab589))
+* test fix to app5 ([7fa2d98](https://github.com/thejaswitricon/dockertest/commit/7fa2d9829ce3bbfaa10ddb528c6554e64d1f371e))
+
 # 1.0.0 (2023-05-05)
 
 
