@@ -1,5 +1,5 @@
 {
-  "name": "app1",
+  "name": "app3",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -47,10 +47,3 @@
     "ignore": []
   }
 }
-<<<<<<< HEAD
-=======
-
-
-
-
->>>>>>> ba67c168931e937e8700272b1950e9606873e831
