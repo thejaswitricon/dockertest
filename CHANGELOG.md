@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## [1.0.1](https://github.com/thejaswitricon/dockertest/compare/app3/index.js-v1.0.0...app3/index.js-v1.0.1) (2023-05-05)
+
+
+### Bug Fixes
+
+* test fix to app3 ([caffa63](https://github.com/thejaswitricon/dockertest/commit/caffa637aa92d63c559897232762252c28bab589))
+
 # 1.0.0 (2023-05-05)
 
 
