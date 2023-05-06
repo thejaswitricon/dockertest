@@ -1,4 +1,4 @@
-name: Trigger on push to master and changes in newrelic/aws directories
+name: Semantic Release
 
 on:
   push:
@@ -9,24 +9,47 @@ on:
       - 'applications/aws/**'
 
 jobs:
-  detect-changed-folders:
+  build:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-        with:
-          ref: ${{ github.ref }}
-      
-      - name: Detect changed folders
-        id: detect-changed-folders
-        run: |
-          folders=$(git diff --name-only ${{ github.event.before }} ${{ github.event.after }} | cut -d'/' -f3 | sort -u)
-          echo "::set-output name=folders::$folders"
 
-      - name: Print matrix
-        run: echo ${{ matrix.folders }}
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14.x'
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Determine Changed Directories
+        id: determine_directories
+        run: |
+          git fetch --no-tags --prune --depth=1 origin +refs/heads/master:refs/remotes/origin/master
+          git diff --name-only ${{ github.event.before }} ${{ github.event.after }} | awk -F'/' '{print $2}' | sort | uniq > changed_dirs.txt
+          echo "Changed Directories: $(cat changed_dirs.txt)"
+        shell: bash
+
+      - name: Set up Matrix
+        id: matrix
+        uses: fregante/matrix-external@v2.0.2
+        with:
+          cols: ${{ steps.determine_directories.outputs.changed_dirs }}
+          separator: ','
+
+      - name: Run Semantic Release
+        uses: "semantic-release/action@v1"
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
         env:
-          matrix: ${{fromJson(steps.detect-changed-folders.outputs.folders)}}
+          CI: true
+          GIT_AUTHOR_NAME: Semantic Release Bot
+          GIT_AUTHOR_EMAIL: semantic-release-bot@users.noreply.github.com
+          GIT_COMMITTER_NAME: Semantic Release Bot
+          GIT_COMMITTER_EMAIL: semantic-release-bot@users.noreply.github.com
+
 
 
 # name: semantic-release for apps
