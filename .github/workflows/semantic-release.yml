@@ -25,11 +25,12 @@ jobs:
         with:
           fetch-depth: 0
 
-      # Get the name of the directory that was changed
       - name: Get changed directories
         id: changed_dirs
         run: |
-          echo "::set-output name=dirs::$(git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | awk -F/ '{print $2 "/" $3}' | sort -u)"
+          changed_dirs=$(git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | awk -F/ '{print $2 "/" $3}' | sort -u)
+          echo "::set-output name=dirs::$changed_dirs"
+        if: contains(strategy.matrix.app, lower(substring('${{ matrix.app }}', 5))) && contains(steps.changed_dirs.outputs.dirs, lower(substring('${{ matrix.app }}', 5))))
 
       # Update the tag format to include the name of the directory
       - name: Update tag format
