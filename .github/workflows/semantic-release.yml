@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        app: [app3, app4, app5, app6]
+        app: [aws/app3, aws/app4, newrelic/app5, newrelic/app6]
 
     steps:
       - name: Checkout
