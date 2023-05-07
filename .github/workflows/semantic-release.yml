@@ -14,6 +14,10 @@ jobs:
   release:
     name: Semantic Release
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        app: [app3, app4, app5, app6]
+
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -21,33 +25,20 @@ jobs:
         with:
           fetch-depth: 0
 
-      # Get the name of the directories that were changed within applications/aws and applications/newrelic
+      # Get the name of the directory that was changed
       - name: Get changed directories
         id: changed_dirs
         run: |
-          echo "::set-output name=dirs::$(git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | awk -F/ '($2 == "aws" || $2 == "newrelic") {print $2 "/" $3}' | sort -u)"
-
-      # Set the matrix with the directory names
-      - name: Set matrix with directory names
-        id: set_matrix
-        run: |
-          dirs=$(echo "${{ steps.changed_dirs.outputs.dirs }}")
-          if [ -n "$dirs" ]; then
-            matrix_dirs=$(echo "$dirs" | sed "s|.*\/\(.*\)|\1|g" | tr '\n' ',' | sed 's/,$//')
-            echo "##[set-output name=matrix_dirs]$matrix_dirs"
-          else
-            echo "##[set-output name=matrix_dirs]none"
-          fi
+          echo "::set-output name=dirs::$(git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | awk -F/ '{print $2 "/" $3}' | sort -u)"
 
       # Update the tag format to include the name of the directory
       - name: Update tag format
         id: update_tag_format
         run: |
-          APP_NAME=$(echo "${{ matrix.dir }}" | awk '{print tolower($0)}')
+          APP_NAME=$(echo "${{ steps.changed_dirs.outputs.dirs }}" | awk '{print tolower($0)}')
           echo "::set-output name=tag_format::${APP_NAME}-v\${version}"
-        env:
-          matrix: ${{fromJson(steps.set_matrix.outputs.matrix_dirs)}}
-
+      
+      #Add new version to changelog
       - name: Add new version to changelog
         id: add_version_to_changelog
         run: |
@@ -88,6 +79,8 @@ jobs:
           echo "${{ toJson(steps.semantic.outputs) }}" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
         continue-on-error: true
+
+
 ###################################################################################################################
 # jobs:
 #   release:
