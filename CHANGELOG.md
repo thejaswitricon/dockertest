@@ -1,6 +1,15 @@
 # CHANGELOG
 
-## [1.0.10](https://github.com/thejaswitricon/dockertest/compare/newrelic/app5-v1.0.9...newrelic/app5-v1.0.10) (2023-05-07)
+## [1.0.11](https://github.com/thejaswitricon/dockertest/compare/newrelic/app5-v1.0.10...newrelic/app5-v1.0.11) (2023-05-08)
+
+
+### Bug Fixes
+
+* test fix to app5 ([b88eb1c](https://github.com/thejaswitricon/dockertest/commit/b88eb1c90122150f06b6a630e29101d861a171ab))
+* test fix to app5 ([3d0a08d](https://github.com/thejaswitricon/dockertest/commit/3d0a08d992e5c3c702696e218d8d7b7a947061c5))
+* test fix to app5 ([95371f3](https://github.com/thejaswitricon/dockertest/commit/95371f3a5cb45d5aa8d02ed232275421701809b2))
+
+## [newrelic/app5-v1.0.10] 2023-05-08(https://github.com/thejaswitricon/dockertest/compare/newrelic/app5-v1.0.9...newrelic/app5-v1.0.10) (2023-05-07)
 
 
 ### Bug Fixes
