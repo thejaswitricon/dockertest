@@ -1,6 +1,28 @@
 # CHANGELOG
 
-## [1.0.1](https://github.com/thejaswitricon/dockertest/compare/aws/app3-v1.0.0...aws/app3-v1.0.1) (2023-05-08)
+## [1.0.1](https://github.com/thejaswitricon/dockertest/compare/aws/app4-v1.0.0...aws/app4-v1.0.1) (2023-05-08)
+
+
+### Bug Fixes
+
+* test fix to app3 ([2916968](https://github.com/thejaswitricon/dockertest/commit/29169684465ef6a72db573f3dfbca3b057d70bd4))
+* test fix to app3 ([f5780be](https://github.com/thejaswitricon/dockertest/commit/f5780bee17faa8e87489ee56391538b03a8cc95b))
+* test fix to app3 ([ca1fec8](https://github.com/thejaswitricon/dockertest/commit/ca1fec8479e7d03441f97888e97725c3d5e353e4))
+* test fix to app3 ([2082a93](https://github.com/thejaswitricon/dockertest/commit/2082a93afce8c1b34d81bf553884b2f889dedd34))
+* test fix to app3 ([08379dc](https://github.com/thejaswitricon/dockertest/commit/08379dc17dd5d46c787ab4b1a289297844e45e68))
+* test fix to app4 ([6643569](https://github.com/thejaswitricon/dockertest/commit/6643569a6eb3c4432f2d652f255a89bd5b94514c))
+* test fix to app4 ([54d315d](https://github.com/thejaswitricon/dockertest/commit/54d315d1e94496216b66e73723528a6f1c55682b))
+* test fix to app4 ([c5632c0](https://github.com/thejaswitricon/dockertest/commit/c5632c0ca9133fa101b9230d0da9f3a06c190448))
+* test fix to app4 ([6b73fcc](https://github.com/thejaswitricon/dockertest/commit/6b73fcc88272e85a7073fcfcd3f572378afb7df2))
+* test fix to app5 ([d59a03e](https://github.com/thejaswitricon/dockertest/commit/d59a03ea0c15e87ca5a0b374f8062f507962e929))
+* test fix to app5 ([aaf0fb6](https://github.com/thejaswitricon/dockertest/commit/aaf0fb655cc7cd990f554d11e930072eb9f7ea1e))
+* test fix to app5 ([8cca02e](https://github.com/thejaswitricon/dockertest/commit/8cca02e7620342b185fbe02db7c19766e30936d9))
+* test fix to app5 and app6 ([f0af387](https://github.com/thejaswitricon/dockertest/commit/f0af387f9b6e531015c1ffae544af0692f820075))
+* test fix to app6 ([dfb7102](https://github.com/thejaswitricon/dockertest/commit/dfb710299e444522fc4361c09286e6a31b063f89))
+* test fix to app6 ([8cbaad7](https://github.com/thejaswitricon/dockertest/commit/8cbaad753ef3ad3a904fb0ca38b7c0f52659ba63))
+* test fix to app6 ([23e1a1b](https://github.com/thejaswitricon/dockertest/commit/23e1a1b7eac532fc75f616fab15733a5d8518dfe))
+
+## [aws/app3-v1.0.1] 2023-05-08(https://github.com/thejaswitricon/dockertest/compare/aws/app3-v1.0.0...aws/app3-v1.0.1) (2023-05-08)
 
 
 ### Bug Fixes
