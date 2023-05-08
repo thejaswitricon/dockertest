@@ -14,10 +14,6 @@ jobs:
   release:
     name: Semantic Release
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        app: [aws/app3, aws/app4, newrelic/app5, newrelic/app6]
-
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -31,26 +27,6 @@ jobs:
         run: |
           echo "::set-output name=dirs::$(git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | awk -F/ '{print $2 "/" $3}' | sort -u)"
 
-      - name: Check changed directories against matrix
-        id: check_dirs
-        run: |
-          IFS=',' read -ra CHANGED_DIRS <<< "${{ steps.changed_dirs.outputs.dirs }}"
-          IFS=' ' read -ra MATRIX_APPS <<< "${{ matrix.app }}"
-          for dir in "${CHANGED_DIRS[@]}"; do
-            found=false
-            for app in "${MATRIX_APPS[@]}"; do
-              if [[ "$dir" == "$app" ]]; then
-                found=true
-                break
-              fi
-            done
-            if [[ "$found" == false ]]; then
-              echo "Directory $dir not found in matrix apps"
-              exit 1
-            fi
-          done
-
-
       # Update the tag format to include the name of the directory
       - name: Update tag format
         id: update_tag_format
@@ -58,7 +34,6 @@ jobs:
           APP_NAME=$(echo "${{ steps.changed_dirs.outputs.dirs }}" | awk '{print tolower($0)}')
           echo "::set-output name=tag_format::${APP_NAME}-v\${version}"
       
-      #Add new version to changelog
       - name: Add new version to changelog
         id: add_version_to_changelog
         run: |
@@ -100,8 +75,6 @@ jobs:
           echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
         continue-on-error: true
 
-
-###################################################################################################################
 # jobs:
 #   release:
 #     strategy:
