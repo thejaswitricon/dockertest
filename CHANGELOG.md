@@ -1,6 +1,16 @@
 # CHANGELOG
 
-## [1.0.1](https://github.com/thejaswitricon/dockertest/compare/aws/app4-v1.0.0...aws/app4-v1.0.1) (2023-05-08)
+## [1.0.2](https://github.com/thejaswitricon/dockertest/compare/aws/app3-v1.0.1...aws/app3-v1.0.2) (2023-05-08)
+
+
+### Bug Fixes
+
+* test fix to app3 and app5 ([19e9fdd](https://github.com/thejaswitricon/dockertest/commit/19e9fddb1b3de457e721f1a3b4cfd3a31e0d1fc3))
+* test fix to app4 ([6643569](https://github.com/thejaswitricon/dockertest/commit/6643569a6eb3c4432f2d652f255a89bd5b94514c))
+* test fix to app4 ([54d315d](https://github.com/thejaswitricon/dockertest/commit/54d315d1e94496216b66e73723528a6f1c55682b))
+* test fix to app4 ([c5632c0](https://github.com/thejaswitricon/dockertest/commit/c5632c0ca9133fa101b9230d0da9f3a06c190448))
+
+## [aws/app4-v1.0.1] 2023-05-08(https://github.com/thejaswitricon/dockertest/compare/aws/app4-v1.0.0...aws/app4-v1.0.1) (2023-05-08)
 
 
 ### Bug Fixes
