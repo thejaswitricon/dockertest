@@ -25,12 +25,31 @@ jobs:
         with:
           fetch-depth: 0
 
+      # Get the name of the directory that was changed
       - name: Get changed directories
         id: changed_dirs
         run: |
-          changed_dirs=$(git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | awk -F/ '{print $2 "/" $3}' | sort -u)
-          echo "::set-output name=dirs::$changed_dirs"
-        if: contains(strategy.matrix.app, lower(substring('${{ matrix.app }}', 5))) && contains(steps.changed_dirs.outputs.dirs, lower(substring('${{ matrix.app }}', 5))))
+          echo "::set-output name=dirs::$(git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | awk -F/ '{print $2 "/" $3}' | sort -u)"
+
+      - name: Check changed directories against matrix
+        id: check_dirs
+        run: |
+          IFS=',' read -ra CHANGED_DIRS <<< "${{ steps.changed_dirs.outputs.dirs }}"
+          IFS=' ' read -ra MATRIX_APPS <<< "${{ matrix.app }}"
+          for dir in "${CHANGED_DIRS[@]}"; do
+            found=false
+            for app in "${MATRIX_APPS[@]}"; do
+              if [[ "$dir" == "$app" ]]; then
+                found=true
+                break
+              fi
+            done
+            if [[ "$found" == false ]]; then
+              echo "Directory $dir not found in matrix apps"
+              exit 1
+            fi
+          done
+
 
       # Update the tag format to include the name of the directory
       - name: Update tag format
