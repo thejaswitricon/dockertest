@@ -1,5 +1,26 @@
 # CHANGELOG
 
+## [1.0.13](https://github.com/thejaswitricon/dockertest/compare/newrelic/app5-v1.0.12...newrelic/app5-v1.0.13) (2023-05-08)
+
+
+### Bug Fixes
+
+* test fix to app3 ([f5780be](https://github.com/thejaswitricon/dockertest/commit/f5780bee17faa8e87489ee56391538b03a8cc95b))
+* test fix to app3 ([ca1fec8](https://github.com/thejaswitricon/dockertest/commit/ca1fec8479e7d03441f97888e97725c3d5e353e4))
+* test fix to app3 ([2082a93](https://github.com/thejaswitricon/dockertest/commit/2082a93afce8c1b34d81bf553884b2f889dedd34))
+* test fix to app3 ([08379dc](https://github.com/thejaswitricon/dockertest/commit/08379dc17dd5d46c787ab4b1a289297844e45e68))
+* test fix to app4 ([6b73fcc](https://github.com/thejaswitricon/dockertest/commit/6b73fcc88272e85a7073fcfcd3f572378afb7df2))
+* test fix to app4 ([02c6d3d](https://github.com/thejaswitricon/dockertest/commit/02c6d3da12925b2ed25049b2f4f8150f0acb5294))
+* test fix to app4 ([dc7bdc1](https://github.com/thejaswitricon/dockertest/commit/dc7bdc12dd8302982b05bfa028dd9a033d0914a5))
+* test fix to app4 ([edfaccf](https://github.com/thejaswitricon/dockertest/commit/edfaccfafd88eba8f741e7f937f05296f1e30de0))
+* test fix to app5 ([d59a03e](https://github.com/thejaswitricon/dockertest/commit/d59a03ea0c15e87ca5a0b374f8062f507962e929))
+* test fix to app5 ([aaf0fb6](https://github.com/thejaswitricon/dockertest/commit/aaf0fb655cc7cd990f554d11e930072eb9f7ea1e))
+* test fix to app5 ([8cca02e](https://github.com/thejaswitricon/dockertest/commit/8cca02e7620342b185fbe02db7c19766e30936d9))
+* test fix to app5 and app6 ([f0af387](https://github.com/thejaswitricon/dockertest/commit/f0af387f9b6e531015c1ffae544af0692f820075))
+* test fix to app6 ([dfb7102](https://github.com/thejaswitricon/dockertest/commit/dfb710299e444522fc4361c09286e6a31b063f89))
+* test fix to app6 ([8cbaad7](https://github.com/thejaswitricon/dockertest/commit/8cbaad753ef3ad3a904fb0ca38b7c0f52659ba63))
+* test fix to app6 ([23e1a1b](https://github.com/thejaswitricon/dockertest/commit/23e1a1b7eac532fc75f616fab15733a5d8518dfe))
+
 # 1.0.0 (2023-05-08)
 
 
